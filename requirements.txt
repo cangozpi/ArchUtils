@@ -1,1 +1,1 @@
-pip install dxf2svg
+dxf2svg==0.1.1
