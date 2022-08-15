@@ -201,15 +201,40 @@ function sortPaths(path_array) {
 
 // path_collision_array = sortPaths(path_array);
 
+function inferColorIncrement(path_collision_array) {
+  // Given the output of SortPaths as input, return color value to be used in the heighmap generation
+
+  max_height_count = -1; // max height count value
+  for (let i = 0; i < path_collision_array.length; i++) {
+    cur_path = path_collision_array[i];
+    cur_count = cur_path.contours_outside_count;
+
+    if (cur_count > max_height_count) {
+      max_height_count = cur_count;
+    }
+  }
+
+  // calculate the degree of gray to use according to the max_height_count
+  rgb_height_inc_value = Math.floor(256 / max_height_count);
+  opacity_value = 1.0 / max_height_count;
+  return {
+    rgb_value: rgb_height_inc_value,
+    opacity_value: opacity_value,
+  };
+}
+
 function ColorContours(path_array) {
   path_collision_array = sortPaths(path_array);
+  heightMapInfo = inferColorIncrement(path_collision_array);
+
   // Note that higher the contours_outside_count value, the higher the height
   //coordinate in the heightmap of the points
 
   // Iterate through every contour and fill it with color
   for (let i = 0; i < path_array.length; i++) {
     cur_contour = path_array[i];
-    cur_contour.style.fill = "rgba(67, 199, 169, 0.1)"; //TODO: Do NOT hardcode the color value, infer it from max height count value
+    cur_contour.style.fill = `rgba(${heightMapInfo.rgb_value}, ${heightMapInfo.rgb_value}, ${heightMapInfo.rgb_value}, ${heightMapInfo.opacity_value})`; //TODO: Do NOT hardcode the color value, infer it from max height count value
+    cur_contour.style.stroke = "none";
   }
 
   console.log("DONE!");
