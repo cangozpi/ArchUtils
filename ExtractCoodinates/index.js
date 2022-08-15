@@ -88,7 +88,131 @@ let draw_one_path = (heatmapInstance, path, prcnt_inc, z_value) => {
   renderDataPoints(heatmapInstance, dataPointsArray);
 };
 
-// draw heatmap for every contour
-for (let i = 0; i < path_array.length; i++) {
-  draw_one_path(heatmapInstance, path_array[i], prcnt_inc, z_value);
+// // draw heatmap for every contour
+// for (let i = 0; i < path_array.length; i++) {
+//  // draw_one_path(heatmapInstance, path_array[i], prcnt_inc, z_value);
+// }
+
+// ===========================
+
+function isPointInPoly(poly, pt) {
+  for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
+    ((poly[i].y <= pt.y && pt.y < poly[j].y) ||
+      (poly[j].y <= pt.y && pt.y < poly[i].y)) &&
+      pt.x <
+        ((poly[j].x - poly[i].x) * (pt.y - poly[i].y)) /
+          (poly[j].y - poly[i].y) +
+          poly[i].x &&
+      (c = !c);
+  return c;
 }
+
+temp = false;
+
+function checkIfContourContainsAnotherContour(param_path0, param_path1) {
+  // Given path objects, returns if the param_path0 is inside param_path1
+  // extract sampled coordinates on the given contours
+  let path0 = extractCoordinatesFromContour(param_path0, prcnt_inc); // array of (x,y, value) points
+  let path1 = extractCoordinatesFromContour(param_path1, prcnt_inc);
+
+  for (let i = 0; i < path1.length; i++) {
+    // TODO: check collisions in the future or remove for loop
+    temp = isPointInPoly(path1, path0[i]);
+    return temp;
+  }
+}
+
+// temp = checkIfContourContainsAnotherContour(path_array[0], path_array[1]);
+
+// console.log(temp, "heyo")
+
+// ======== Sort the Contours
+
+// function sortPaths(path_array) {
+//   path_collision_array = [];
+//   for (let i = 0; i < path_array.length; i++) {
+//     cur_path = path_array[i];
+//     other_paths = [...Array.from(path_array)];
+//     other_paths.splice(i, 1); // array containing other paths than the cur_path
+//     count = 0; // contained contour count
+//     cur_contained_children = [];
+//     for (let j = 0; j < other_paths.length; j++) {
+//       if (
+//         checkIfContourContainsAnotherContour(other_paths[j], cur_path) == true
+//       ) {
+//         count = count + 1;
+//         cur_contained_children.push(other_paths[j]);
+//       }
+//     }
+
+//     path_collision_array.push({
+//       path: cur_path,
+//       contours_inside_count: count,
+//       contained_contours: cur_contained_children,
+//     });
+//   }
+//   return path_collision_array;
+// }
+
+// sortPaths(path_array);
+
+// function fixContainedContoursBranching(path_array) {
+//   path_collision_array = sortPaths(path_array);
+
+//   for(let i = 0; i < path_collision_array.length; i++) {
+//     cur_contour = path_collision_array[i];
+
+//     for(let j = 0; j < cur_contour.contained_contours.length; j++) {
+//       cur_contained_contour = cur_contour.contained_contours[j];
+
+//     }
+//   }
+// }
+
+// fixContainedContoursBranching(path_array);
+
+// Renaissance ===================
+
+function sortPaths(path_array) {
+  path_collision_array = [];
+  for (let i = 0; i < path_array.length; i++) {
+    cur_path = path_array[i];
+    other_paths = [...Array.from(path_array)];
+    other_paths.splice(i, 1); // array containing other paths than the cur_path
+    count = 0; // contained contour count
+    cur_surrounding_parent = [];
+    for (let j = 0; j < other_paths.length; j++) {
+      if (
+        checkIfContourContainsAnotherContour(cur_path, other_paths[j]) == true
+      ) {
+        count = count + 1;
+        cur_surrounding_parent.push(other_paths[j]);
+      }
+    }
+
+    path_collision_array.push({
+      path: cur_path,
+      contours_outside_count: count,
+      surrounding_contours: cur_surrounding_parent,
+    });
+  }
+  return path_collision_array;
+}
+
+// path_collision_array = sortPaths(path_array);
+
+function ColorContours(path_array) {
+  path_collision_array = sortPaths(path_array);
+  // Note that higher the contours_outside_count value, the higher the height
+  //coordinate in the heightmap of the points
+
+  // Iterate through every contour and fill it with color
+  for (let i = 0; i < path_array.length; i++) {
+    cur_contour = path_array[i];
+    cur_contour.style.fill = "rgba(67, 199, 169, 0.1)"; //TODO: Do NOT hardcode the color value, infer it from max height count value
+  }
+
+  console.log("DONE!");
+}
+
+ColorContours(path_array);

@@ -15,4 +15,8 @@
     height: 70vh;
 } */
 
+svg {
+    height: auto;
+    width: 100%;
+}
 
