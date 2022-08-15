@@ -8,11 +8,6 @@ let radius = 3; // radius of each heatmap data point
 var mySVG = document.getElementById("mySVG");
 var path_array = mySVG.children; // --> array[path]
 
-// var path = path_array[0];
-
-// // Length of path
-// var pathLength = Math.floor(path.getTotalLength());
-
 // Move obj element along path based on percentage of total length
 function SvgCoordinateExtractor(path, prcnt) {
   // Length of path
@@ -42,58 +37,7 @@ let extractCoordinatesFromContour = (path, prcnt_inc) => {
   return coords; // array with [x, y] coords of the path as its elements
 };
 
-// let path_coords = extractCoordinatesFromContour(path, 1);
-
-let initializeHeatMap = (radius) => {
-  // create configuration object
-  let config = {
-    container: document.getElementById("heatmapContainer"),
-    radius: radius, //TODO: set radius of each data point as you need
-    // backgroundColor: "rgb(255, 255, 0)", //TODO set background color to grayscale tones of your heightmap
-    maxOpacity: 1,
-    minOpacity: 1,
-    blur: 0, // TODO: set to 0 for an equal color distribution
-  };
-  // create heatmap with configuration
-  let heatmapInstance = h337.create(config);
-
-  return heatmapInstance;
-};
-
-let createHeatMapPoint = (x, y, value) => {
-  return (dataPoint = {
-    x: x, // x coordinate of the datapoint, a number
-    y: y, // y coordinate of the datapoint, a number
-    value: value, // the value at datapoint(x, y)
-  });
-};
-
-let renderDataPoints = (heatmapInstance, dataPointsArray) => {
-  heatmapInstance.addData(dataPointsArray);
-  console.log("Heatmap Data points for a path are rendered !");
-};
-
-// Initialize HeatMap
-let heatmapInstance = initializeHeatMap(radius);
-
-let draw_one_path = (heatmapInstance, path, prcnt_inc, z_value) => {
-  let path_coords = extractCoordinatesFromContour(path, prcnt_inc);
-
-  // convert x,y coords to x,y,z obj format that heatmap expects
-  dataPointsArray = path_coords.map((p) => {
-    return createHeatMapPoint(p.x, p.y, z_value);
-  });
-
-  // Render Data Points on the heatmap
-  renderDataPoints(heatmapInstance, dataPointsArray);
-};
-
-// // draw heatmap for every contour
-// for (let i = 0; i < path_array.length; i++) {
-//  // draw_one_path(heatmapInstance, path_array[i], prcnt_inc, z_value);
-// }
-
-// ===========================
+// Logic for checking if a contour is contained within another given contour path ================
 
 function isPointInPoly(poly, pt) {
   for (var c = false, i = -1, l = poly.length, j = l - 1; ++i < l; j = i)
@@ -122,56 +66,7 @@ function checkIfContourContainsAnotherContour(param_path0, param_path1) {
   }
 }
 
-// temp = checkIfContourContainsAnotherContour(path_array[0], path_array[1]);
-
-// console.log(temp, "heyo")
-
-// ======== Sort the Contours
-
-// function sortPaths(path_array) {
-//   path_collision_array = [];
-//   for (let i = 0; i < path_array.length; i++) {
-//     cur_path = path_array[i];
-//     other_paths = [...Array.from(path_array)];
-//     other_paths.splice(i, 1); // array containing other paths than the cur_path
-//     count = 0; // contained contour count
-//     cur_contained_children = [];
-//     for (let j = 0; j < other_paths.length; j++) {
-//       if (
-//         checkIfContourContainsAnotherContour(other_paths[j], cur_path) == true
-//       ) {
-//         count = count + 1;
-//         cur_contained_children.push(other_paths[j]);
-//       }
-//     }
-
-//     path_collision_array.push({
-//       path: cur_path,
-//       contours_inside_count: count,
-//       contained_contours: cur_contained_children,
-//     });
-//   }
-//   return path_collision_array;
-// }
-
-// sortPaths(path_array);
-
-// function fixContainedContoursBranching(path_array) {
-//   path_collision_array = sortPaths(path_array);
-
-//   for(let i = 0; i < path_collision_array.length; i++) {
-//     cur_contour = path_collision_array[i];
-
-//     for(let j = 0; j < cur_contour.contained_contours.length; j++) {
-//       cur_contained_contour = cur_contour.contained_contours[j];
-
-//     }
-//   }
-// }
-
-// fixContainedContoursBranching(path_array);
-
-// Renaissance ===================
+// Sort contours and figure out their relative heights ===================
 
 function sortPaths(path_array) {
   path_collision_array = [];
@@ -198,8 +93,6 @@ function sortPaths(path_array) {
   }
   return path_collision_array;
 }
-
-// path_collision_array = sortPaths(path_array);
 
 function inferColorIncrement(path_collision_array) {
   // Given the output of SortPaths as input, return color value to be used in the heighmap generation
@@ -241,3 +134,25 @@ function ColorContours(path_array) {
 }
 
 ColorContours(path_array);
+
+// ========================= Convert SVG to PNG and Download it
+function svg2img() {
+  var svgString = new XMLSerializer().serializeToString(
+    document.querySelector("svg")
+  );
+  var canvas = document.getElementById("canvas");
+  var ctx = canvas.getContext("2d");
+  var DOMURL = self.URL || self.webkitURL || self;
+  var img = new Image();
+  var svg = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+  var url = DOMURL.createObjectURL(svg);
+  img.onload = function () {
+    ctx.drawImage(img, 0, 0);
+    var png = canvas.toDataURL("image/png");
+    document.querySelector("header").innerHTML =
+      '<a download="image.png" href="' + png + '">Download</>';
+    DOMURL.revokeObjectURL(png);
+  };
+  img.src = url;
+}
+svg2img();
