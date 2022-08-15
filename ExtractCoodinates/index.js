@@ -136,23 +136,43 @@ function ColorContours(path_array) {
 ColorContours(path_array);
 
 // ========================= Convert SVG to PNG and Download it
+// function svg2img() {
+//   var svgString = new XMLSerializer().serializeToString(
+//     document.querySelector("svg")
+//   );
+//   var canvas = document.getElementById("canvas");
+//   var ctx = canvas.getContext("2d");
+//   var DOMURL = self.URL || self.webkitURL || self;
+//   var img = new Image();
+//   var svg = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+//   var url = DOMURL.createObjectURL(svg);
+//   img.onload = function () {
+//     ctx.drawImage(img, 0, 0);
+//     var png = canvas.toDataURL("image/png");
+//     document.querySelector("header").innerHTML =
+//       '<a download="image.png" href="' + png + '">Download</>';
+//     DOMURL.revokeObjectURL(png);
+//   };
+//   img.src = url;
+// }
+// svg2img();
+
 function svg2img() {
-  var svgString = new XMLSerializer().serializeToString(
-    document.querySelector("svg")
-  );
-  var canvas = document.getElementById("canvas");
-  var ctx = canvas.getContext("2d");
-  var DOMURL = self.URL || self.webkitURL || self;
-  var img = new Image();
-  var svg = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-  var url = DOMURL.createObjectURL(svg);
-  img.onload = function () {
-    ctx.drawImage(img, 0, 0);
-    var png = canvas.toDataURL("image/png");
-    document.querySelector("header").innerHTML =
-      '<a download="image.png" href="' + png + '">Download</>';
-    DOMURL.revokeObjectURL(png);
-  };
-  img.src = url;
+  const svg = document.querySelector("svg");
+  const { x, y, width, height } = svg.viewBox.baseVal;
+  const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+  const url = URL.createObjectURL(blob);
+  const image = document.createElement("img");
+  image.src = url;
+  image.addEventListener("load", () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d");
+    context.drawImage(image, x, y, width, height);
+    const link = document.getElementById("link");
+    link.href = canvas.toDataURL();
+    URL.revokeObjectURL(url);
+  });
 }
 svg2img();
