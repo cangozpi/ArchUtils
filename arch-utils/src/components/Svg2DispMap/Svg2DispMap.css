@@ -1,3 +1,7 @@
 .content {
     background-color: gray;
 }
+
+svg {
+    overflow: visible;
+}
