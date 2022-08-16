@@ -85,7 +85,6 @@ function createHemisphereLight() {
   return new THREE.HemisphereLight(0x303f9f, 0x000000, 1);
 }
 
-
 // Generate Mesh from HeightMap ==================================
 
 // // load the heightmap we created as a texture
@@ -162,12 +161,16 @@ function createHemisphereLight() {
 
 // loaded();
 
-
 // VIDEOOOOOO ==================================
 
-const groundGeo = new THREE.PlaneGeometry(1000,1000, window.innerWidth, window.innerHeight);
+const groundGeo = new THREE.PlaneGeometry(
+  1000,
+  1000,
+  window.innerWidth,
+  window.innerHeight
+);
 
-let dispMap = new THREE.TextureLoader().setPath("./").load("image_reversed.png");
+let dispMap = new THREE.TextureLoader().setPath("./").load("image.jpg");
 
 dispMap.wrapS = dispMap.wrapT = THREE.RepeatWrapping;
 // dispMap.repeat.set(??, ??);
@@ -175,9 +178,9 @@ dispMap.wrapS = dispMap.wrapT = THREE.RepeatWrapping;
 const groundMat = new THREE.MeshStandardMaterial({
   color: 0x000000,
   wireframe: true,
-  displacementMap:dispMap,
-  displacementScale: 100
-})
+  displacementMap: dispMap,
+  displacementScale: 100,
+});
 
 groundMesh = new THREE.Mesh(groundGeo, groundMat);
 scene.add(groundMesh);
@@ -185,7 +188,6 @@ groundMesh.rotation.x = -Math.PI / 2;
 groundMesh.position.y = -0.5;
 
 // ===============================================================
-
 
 const render = function () {
   requestAnimationFrame(render);

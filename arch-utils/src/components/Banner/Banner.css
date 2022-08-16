@@ -1,0 +1,40 @@
+.banner {
+    background-color: royalblue;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.max_width_wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+    padding: 0.3em;
+}
+
+.icon {
+    width: 3em;
+}
+
+.title {
+    flex-grow: 1;
+    position: relative;
+    left: calc(-3em);
+    color: antiquewhite;
+    cursor: default;
+}
+
+
+
+@media screen and (min-width:800px){
+    /* .banner {
+        font-size: 1rem;
+    } */
+    .max_width_wrapper {
+        max-width: 400px;
+    }
+}
+
