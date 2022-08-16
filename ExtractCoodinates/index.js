@@ -108,7 +108,8 @@ function inferColorIncrement(path_collision_array) {
   }
 
   // calculate the degree of gray to use according to the max_height_count
-  rgb_height_inc_value = Math.floor(256 / max_height_count);
+  // rgb_height_inc_value = Math.floor(256 / max_height_count);
+  rgb_height_inc_value = Math.floor(255);
   opacity_value = 1.0 / max_height_count;
   return {
     rgb_value: rgb_height_inc_value,
@@ -171,7 +172,7 @@ function svg2img() {
     const context = canvas.getContext("2d");
     context.drawImage(image, x, y, width, height);
     const link = document.getElementById("link");
-    link.href = canvas.toDataURL();
+    link.href = canvas.toDataURL('image/jpeg');
     URL.revokeObjectURL(url);
   });
 }

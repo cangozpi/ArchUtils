@@ -1,8 +1,9 @@
 const scene = new THREE.Scene();
 const camera = createCamera();
-const textureLoader = new THREE.TextureLoader();
-const plyLoader = new THREE.PLYLoader();
 const renderer = createRenderer();
+
+// const textureLoader = new THREE.TextureLoader();
+// const plyLoader = new THREE.PLYLoader();
 const controls = createOrbitsControls(camera, renderer);
 
 function createCamera() {
@@ -13,7 +14,7 @@ function createCamera() {
     1000
   );
 
-  camera.position.z = 8;
+  camera.position.z = 1000;
   camera.position.y = 0;
   camera.position.x = 0;
 
@@ -37,14 +38,14 @@ function createRenderer() {
 function createOrbitsControls(camera, renderer) {
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-  controls.enableZoom = false;
-  controls.autoRotate = true;
-  controls.enablePan = false;
-  controls.keyPanSpeed = 7.0;
-  controls.enableKeys = false;
-  controls.target = new THREE.Vector3(0, 0, 0);
-  controls.mouseButtons = {};
-  controls.dispose();
+  // controls.enableZoom = true;
+  // controls.autoRotate = false;
+  // controls.enablePan = false;
+  // controls.keyPanSpeed = 7.0;
+  // controls.enableKeys = false;
+  // controls.target = new THREE.Vector3(0, 0, 0);
+  // controls.mouseButtons = {};
+  // controls.dispose();
 
   return controls;
 }
@@ -84,141 +85,107 @@ function createHemisphereLight() {
   return new THREE.HemisphereLight(0x303f9f, 0x000000, 1);
 }
 
-//Load models.
-loadStars(textureLoader, function (stars) {
-  scene.add(stars);
-});
 
-loadPlyModelUsingPhysicalMaterial(
-  plyLoader,
-  "assets/models/lucy.ply",
-  {
-    color: 0x3f51b5,
-    roughness: 0.5,
-    metalness: 0.7,
-    clearCoat: 0.5,
-    clearCoatRoughness: 0.5,
-    reflectivity: 0.7,
-  },
-  new THREE.Vector3(3, -3, 0),
-  new THREE.Vector3(0, -Math.PI / 3.0, 0),
-  function (mesh) {
-    scene.add(mesh);
-  }
-);
+// Generate Mesh from HeightMap ==================================
 
-loadPlyModelUsingPhysicalMaterial(
-  plyLoader,
-  "assets/models/dragon.ply",
-  {
-    color: 0x448aff,
-    roughness: 0.1,
-    metalness: 0.9,
-    clearCoat: 0.0,
-    clearCoatRoughness: 0.2,
-    reflectivity: 1,
-  },
-  new THREE.Vector3(-3, -3, 0),
-  new THREE.Vector3(0, -Math.PI, 0),
-  function (mesh) {
-    scene.add(mesh);
-  }
-);
+// // load the heightmap we created as a texture
+// function loaded() {
+//   n++;
+//   console.log("loaded: " + n);
 
-loadPlyModelUsingPhysicalMaterial(
-  plyLoader,
-  "assets/models/bunny.ply",
-  {
-    color: 0xccffff,
-    roughness: 0.9,
-    metalness: 0.1,
-    clearCoat: 0.0,
-    clearCoatRoughness: 0.5,
-    reflectivity: 0.1,
-  },
-  new THREE.Vector3(0, -3, 1.5),
-  new THREE.Vector3(0, -Math.PI, 0),
-  function (mesh) {
-    scene.add(mesh);
-  }
-);
+//   if (n == 3) {
+//       terrain.visible = true;
+//       console.log('ff');
+//       render();
+//   }
+// }
 
-loadFloor(textureLoader, function (mesh) {
-  scene.add(mesh);
-});
+// var texture = THREE.ImageUtils.loadTexture('./TestTopogrophyMap.jpg', null, loaded);
 
-function loadStars(textureLoader, completeLoad) {
-  textureLoader.load("assets/models/textures/circle.png", function (texture) {
-    const starsGeometry = new THREE.Geometry();
+// // the following configuration defines how the terrain is rendered
+// var terrainShader = THREE.ShaderTerrain[ "terrain" ];
+// var uniformsTerrain = THREE.UniformsUtils.clone(terrainShader.uniforms);
 
-    for (let i = 0; i < 10000; i++) {
-      const star = new THREE.Vector3();
+// // how to treat abd scale the normal texture
+// uniformsTerrain[ "tNormal" ].texture = detailTexture;
+// uniformsTerrain[ "uNormalScale" ].value = 1;
 
-      star.x = 2000 * Math.random() - 1000;
-      star.y = 2000 * Math.random();
-      star.z = 2000 * Math.random() - 1000;
+// // the displacement determines the height of a vector, mapped to
+// // the heightmap
+// uniformsTerrain[ "tDisplacement" ].texture = texture;
+// uniformsTerrain[ "uDisplacementScale" ].value = 100;
 
-      starsGeometry.vertices.push(star);
-    }
+// // the following textures can be use to fine tune how
+// // the map is shown. These are good defaults for simple
+// // rendering
+// uniformsTerrain[ "tDiffuse1" ].texture = detailTexture;
+// uniformsTerrain[ "tDetail" ].texture = detailTexture;
+// uniformsTerrain[ "enableDiffuse1" ].value = true;
+// uniformsTerrain[ "enableDiffuse2" ].value = true;
+// uniformsTerrain[ "enableSpecular" ].value = true;
 
-    const starsMaterial = new THREE.PointsMaterial({
-      color: 0x888888,
-      map: texture,
-      transparent: true,
-    });
+// // diffuse is based on the light reflection
+// uniformsTerrain[ "uDiffuseColor" ].value.setHex(0xcccccc);
+// uniformsTerrain[ "uSpecularColor" ].value.setHex(0xff0000);
+// // is the base color of the terrain
+// uniformsTerrain[ "uAmbientColor" ].value.setHex(0x0000cc);
 
-    const stars = new THREE.Points(starsGeometry, starsMaterial);
+// // how shiny is the terrain
+// uniformsTerrain[ "uShininess" ].value = 3;
 
-    completeLoad(stars);
-  });
-}
+// // handles light reflection
+// uniformsTerrain[ "uRepeatOverlay" ].value.set(3, 3);
 
-function loadPlyModelUsingPhysicalMaterial(
-  plyLoader,
-  path,
-  parameters,
-  position,
-  rotation,
-  completeLoad
-) {
-  plyLoader.load(path, function (geometry) {
-    const material = new THREE.MeshPhysicalMaterial(parameters);
-    const mesh = new THREE.Mesh(geometry, material);
+// // configure the material that reflects our terrain
+// var material = new THREE.ShaderMaterial({
+//     uniforms:uniformsTerrain,
+//     vertexShader:terrainShader.vertexShader,
+//     fragmentShader:terrainShader.fragmentShader,
+//     lights:true,
+//     fog:false
+// });
 
-    mesh.position.set(position.x, position.y, position.z);
-    mesh.rotation.set(rotation.x, rotation.y, rotation.z);
-    mesh.castShadow = true;
-    mesh.matrixAutoUpdate = false;
-    mesh.updateMatrix();
+// // we use a plain to render as terrain
+// var geometryTerrain = new THREE.PlaneGeometry(2000, 4000, 256, 256);
+// geometryTerrain.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
+// geometryTerrain.computeFaceNormals();
+// geometryTerrain.computeVertexNormals();
+// geometryTerrain.computeTangents();
 
-    completeLoad(mesh);
-  });
-}
+// // create a 3D object to add
+// terrain = new THREE.Mesh(geometryTerrain, material);
+// terrain.position.set(0, -125, 0);
+// terrain.rotation.x = -Math.PI / 2;
 
-function loadFloor(textureLoader, completionFunction) {
-  textureLoader.load("assets/models/textures/marble.jpeg", function (texture) {
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(100, 100);
+// // add the terrain
+// scene.add(terrain);
 
-    const floorMat = new THREE.MeshStandardMaterial({
-      roughness: 0.7,
-      metalness: 0.1,
-      map: texture,
-    });
+// loaded();
 
-    const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
-    const floorMesh = new THREE.Mesh(floorGeometry, floorMat);
 
-    floorMesh.receiveShadow = true;
-    floorMesh.rotation.x = -Math.PI / 2.0;
-    floorMesh.position.y = -3;
-    floorMesh.matrixAutoUpdate = false;
-    floorMesh.updateMatrix();
+// VIDEOOOOOO ==================================
 
-    completionFunction(floorMesh);
-  });
-}
+const groundGeo = new THREE.PlaneGeometry(1000,1000, window.innerWidth, window.innerHeight);
+
+let dispMap = new THREE.TextureLoader().setPath("./").load("image_reversed.png");
+
+dispMap.wrapS = dispMap.wrapT = THREE.RepeatWrapping;
+// dispMap.repeat.set(??, ??);
+
+const groundMat = new THREE.MeshStandardMaterial({
+  color: 0x000000,
+  wireframe: true,
+  displacementMap:dispMap,
+  displacementScale: 100
+})
+
+groundMesh = new THREE.Mesh(groundGeo, groundMat);
+scene.add(groundMesh);
+groundMesh.rotation.x = -Math.PI / 2;
+groundMesh.position.y = -0.5;
+
+// ===============================================================
+
 
 const render = function () {
   requestAnimationFrame(render);
