@@ -1,0 +1,256 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Render 3D</title>
+</head>
+<body>
+    <h2>Render 3D</h2>
+    
+
+    <script src="https://unpkg.com/three@0.124.0/build/three.js"></script>
+    <script src="https://unpkg.com/three@0.124.0/examples/js/loaders/PLYLoader.js"></script>
+    <script src="https://unpkg.com/three@0.124.0/examples/js/controls/OrbitControls.js"></script>
+    <!-- <script>
+        // const scene = new THREE.Scene();
+        // const camera = createCamera();
+        // const textureLoader = new THREE.TextureLoader();
+        // const plyLoader = new THREE.PLYLoader();
+        // const renderer = createRenderer();
+        // const controls = createOrbitsControls(camera, renderer);
+
+        // function createCamera() {
+        //     const camera = new THREE.PerspectiveCamera(
+        //         75,
+        //         window.innerWidth / window.innerHeight,
+        //         0.1,
+        //         1000
+        //     );
+
+        //     camera.position.z = 8;
+        //     camera.position.y = 0;
+        //     camera.position.x = 0;
+
+        //     return camera;
+        // }
+
+        // function createRenderer() {
+        //     const renderer = new THREE.WebGLRenderer({ alpha: true });
+
+        //     renderer.physicallyCorrectLights = true;
+        //     renderer.gammaInput = true;
+        //     renderer.gammaOutput = true;
+        //     renderer.shadowMap.enabled = true;
+        //     renderer.shadowMap.bias = 0.0001;
+        //     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        //     renderer.setSize(window.innerWidth, window.innerHeight);
+
+        //     return renderer;
+        // }
+
+        // function createOrbitsControls(camera, renderer) {
+        //     const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+        //     controls.enableZoom = false;
+        //     controls.autoRotate = true;
+        //     controls.enablePan = false;
+        //     controls.keyPanSpeed = 7.0;
+        //     controls.enableKeys = false;
+        //     controls.target = new THREE.Vector3(0, 0, 0);
+        //     controls.mouseButtons = {};
+        //     controls.dispose();
+
+        //     return controls;
+        // }
+
+        // // Add rendering dom element to page.
+        // document.body.appendChild(renderer.domElement);
+
+        // // Setup scene.
+        // scene.background = new THREE.Color(0x303f9f);
+        // scene.add(createLight());
+        // scene.add(createHemisphereLight());
+
+        // function createLight() {
+        //     const lightGeometry = new THREE.SphereGeometry(0);
+
+        //     const lightMaterial = new THREE.MeshStandardMaterial({
+        //         emissive: 0xffffee,
+        //         emissiveIntensity: 1,
+        //         color: 0x000000,
+        //     });
+
+        //     const light = new THREE.PointLight(0xffffff, 1, 20, 2);
+
+        //     light.power = 1700;
+        //     light.castShadow = true;
+        //     light.shadow.mapSize.width = 512;
+        //     light.shadow.mapSize.heigth = 512;
+        //     light.shadow.radius = 1.5;
+
+        //     light.add(new THREE.Mesh(lightGeometry, lightMaterial));
+        //     light.position.set(0, 5, 3);
+
+        //     return light;
+        // }
+
+        // function createHemisphereLight() {
+        //     return new THREE.HemisphereLight(0x303f9f, 0x000000, 1);
+        // }
+
+        // //Load models.
+        // loadStars(textureLoader, function (stars) {
+        //     scene.add(stars);
+        // });
+
+        // loadPlyModelUsingPhysicalMaterial(
+        //     plyLoader,
+        //     'assets/models/lucy.ply',
+        //     {
+        //         color: 0x3f51b5,
+        //         roughness: 0.5,
+        //         metalness: 0.7,
+        //         clearCoat: 0.5,
+        //         clearCoatRoughness: 0.5,
+        //         reflectivity: 0.7,
+        //     },
+        //     new THREE.Vector3(3, -3, 0),
+        //     new THREE.Vector3(0, -Math.PI / 3.0, 0),
+        //     function (mesh) {
+        //         scene.add(mesh);
+        //     }
+        // );
+
+        // loadPlyModelUsingPhysicalMaterial(
+        //     plyLoader,
+        //     'assets/models/dragon.ply',
+        //     {
+        //         color: 0x448aff,
+        //         roughness: 0.1,
+        //         metalness: 0.9,
+        //         clearCoat: 0.0,
+        //         clearCoatRoughness: 0.2,
+        //         reflectivity: 1,
+        //     },
+        //     new THREE.Vector3(-3, -3, 0),
+        //     new THREE.Vector3(0, -Math.PI, 0),
+        //     function (mesh) {
+        //         scene.add(mesh);
+        //     }
+        // );
+
+        // loadPlyModelUsingPhysicalMaterial(
+        //     plyLoader,
+        //     'assets/models/bunny.ply',
+        //     {
+        //         color: 0xccffff,
+        //         roughness: 0.9,
+        //         metalness: 0.1,
+        //         clearCoat: 0.0,
+        //         clearCoatRoughness: 0.5,
+        //         reflectivity: 0.1,
+        //     },
+        //     new THREE.Vector3(0, -3, 1.5),
+        //     new THREE.Vector3(0, -Math.PI, 0),
+        //     function (mesh) {
+        //         scene.add(mesh);
+        //     }
+        // );
+
+        // loadFloor(textureLoader, function (mesh) {
+        //     scene.add(mesh);
+        // });
+
+        // function loadStars(textureLoader, completeLoad) {
+        //     textureLoader.load('assets/models/textures/circle.png', function (
+        //         texture
+        //     ) {
+        //         const starsGeometry = new THREE.Geometry();
+
+        //         for (let i = 0; i < 10000; i++) {
+        //             const star = new THREE.Vector3();
+
+        //             star.x = 2000 * Math.random() - 1000;
+        //             star.y = 2000 * Math.random();
+        //             star.z = 2000 * Math.random() - 1000;
+
+        //             starsGeometry.vertices.push(star);
+        //         }
+
+        //         const starsMaterial = new THREE.PointsMaterial({
+        //             color: 0x888888,
+        //             map: texture,
+        //             transparent: true,
+        //         });
+
+        //         const stars = new THREE.Points(starsGeometry, starsMaterial);
+
+        //         completeLoad(stars);
+        //     });
+        // }
+
+        // function loadPlyModelUsingPhysicalMaterial(
+        //     plyLoader,
+        //     path,
+        //     parameters,
+        //     position,
+        //     rotation,
+        //     completeLoad
+        // ) {
+        //     plyLoader.load(path, function (geometry) {
+        //         const material = new THREE.MeshPhysicalMaterial(parameters);
+        //         const mesh = new THREE.Mesh(geometry, material);
+
+        //         mesh.position.set(position.x, position.y, position.z);
+        //         mesh.rotation.set(rotation.x, rotation.y, rotation.z);
+        //         mesh.castShadow = true;
+        //         mesh.matrixAutoUpdate = false;
+        //         mesh.updateMatrix();
+
+        //         completeLoad(mesh);
+        //     });
+        // }
+
+        // function loadFloor(textureLoader, completionFunction) {
+        //     textureLoader.load('assets/models/textures/marble.jpeg', function (
+        //         texture
+        //     ) {
+        //         texture.wrapS = THREE.RepeatWrapping;
+        //         texture.wrapT = THREE.RepeatWrapping;
+        //         texture.repeat.set(100, 100);
+
+        //         const floorMat = new THREE.MeshStandardMaterial({
+        //             roughness: 0.7,
+        //             metalness: 0.1,
+        //             map: texture,
+        //         });
+
+        //         const floorGeometry = new THREE.PlaneGeometry(1000, 1000);
+        //         const floorMesh = new THREE.Mesh(floorGeometry, floorMat);
+
+        //         floorMesh.receiveShadow = true;
+        //         floorMesh.rotation.x = -Math.PI / 2.0;
+        //         floorMesh.position.y = -3;
+        //         floorMesh.matrixAutoUpdate = false;
+        //         floorMesh.updateMatrix();
+
+        //         completionFunction(floorMesh);
+        //     });
+        // }
+
+        // const render = function () {
+        //     requestAnimationFrame(render);
+        //     controls.update();
+        //     renderer.render(scene, camera);
+        // };
+
+        // render();
+    </script> -->
+
+
+
+    <script src="./render.js"></script>
+
+</body>
+</html>
