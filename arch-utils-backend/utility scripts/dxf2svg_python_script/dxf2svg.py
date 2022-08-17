@@ -118,16 +118,19 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         sys.exit('Usage: {0} file-name'.format(sys.argv[0]))
     filename = sys.argv[1]
-    print(filename, type(filename))
-    # # grab data from file
-    # dxfData = dxfgrabber.readfile(filename)
+    print(filename)
+    # grab data from file
+    dxfData = dxfgrabber.readfile(filename)
 
-    # # TODO: show alert if the file already exist
-    # # convert and save to svg
-    # svgName = '.'.join(filename.split('.')[:-1] + ['svg'])
-    # svgFile = open(svgName, 'w')
+    # TODO: show alert if the file already exist
+    # convert and save to svg
+    svgName = '.'.join(filename.split('.')[:-1] + ['svg'])
+    svgFile = open(svgName, 'w')
 
-    # saveToSVG(svgFile, dxfData)
+    saveToSVG(svgFile, dxfData)
 
-    # svgFile.close()
-#end: __main__
+    svgFile.close()
+# end: __main__
+
+# "./IOFiles/deneme1234.dxf"
+# './IOFiles/deneme1234.dxf'
