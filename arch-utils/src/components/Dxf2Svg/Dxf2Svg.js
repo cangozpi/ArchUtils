@@ -17,8 +17,9 @@ import dxf2svgConversionHelper from "./helpers/dxf2svgConvertionHelper";
 function Dxf2Svg() {
   // File upload functions start here ------------------------
   const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
-  let [fileState, setFileState] = React.useState(null);
+  let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
 
+  // uploads chosen file to the server by making PUT request
   let PostDxfFileToServer = () => {
     let formData = new FormData();
     formData.append("dxf_file", fileState);
@@ -35,13 +36,11 @@ function Dxf2Svg() {
       });
   };
 
-  // On file select (from the pop up)
   let onFileChange = (event) => {
     // Update the state
     if (event.target.files.length > 0) {
-      setFileState(event.target.files[0]);
+      setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
     }
-    // useEffect would be triggered to make the PUT request to the server
   };
 
   React.useEffect(() => {
@@ -50,7 +49,7 @@ function Dxf2Svg() {
       PostDxfFileToServer();
     }
   }, [fileState]);
-  // File upload functions start end ------------------------
+  // File upload functions end ------------------------
 
   // Accordion Menu functions start -
   const [expanded, setExpanded] = React.useState(false);
