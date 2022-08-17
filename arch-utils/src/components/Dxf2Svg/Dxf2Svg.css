@@ -8,4 +8,14 @@
 .generatedSvgAccordion {
     margin-top: 1em !important;
     flex-basis: 100%;
+    max-width: 800px;
+}
+
+.dxf2svg_svg{
+    height: 50%;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
 }

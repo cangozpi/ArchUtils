@@ -12,7 +12,6 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Dxf2Svg conversion helper utilities
-import dxf2svgConversionHelper from "./helpers/dxf2svgConvertionHelper";
 
 function Dxf2Svg() {
   // File upload functions start here ------------------------
@@ -142,6 +141,7 @@ function Dxf2Svg() {
           ></LabelledButton>
 
           {/* Display Generated Svg Accordion below --> */}
+          <div className="break"></div>
           <div className="generatedSvgAccordion">
             <Accordion
               expanded={expanded === "panel1"}
@@ -162,9 +162,16 @@ function Dxf2Svg() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography>
-                  To be Implemented ... Generated Map will be displayed here.
-                </Typography>
+                {/* <img
+                  className="dxf2svg_svg"
+                  src={generatedSvg.url}
+                  alt="generated svg"
+                /> */}
+                <object
+                  type="image/svg+xml"
+                  data={generatedSvg.url}
+                  className="dxf2svg_svg"
+                ></object>
               </AccordionDetails>
             </Accordion>
           </div>
