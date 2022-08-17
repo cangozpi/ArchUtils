@@ -1,0 +1,31 @@
+.UploadDxfBtn {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    border: 1px solid var(--material-ui-success-color);
+    border-radius: 0.5em;
+    padding: 0.5em;
+
+    background-color: var(--labelledButtonsBackground);
+}
+
+.UploadDxfBtnLabel p{
+    color: var(--material-ui-text-color);
+    cursor: default;
+}
+
+.UploadDxfBtn:not(:nth-child(1)) {
+    margin-left: 1em;
+}
+
+@media screen and (max-width:555px) {
+    .dxf2Svg-container {
+        flex-wrap: wrap;
+    }
+
+    .UploadDxfBtn {
+        margin-top: 1em;
+    }
+}
