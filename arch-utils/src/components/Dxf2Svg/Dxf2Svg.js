@@ -68,6 +68,11 @@ function Dxf2Svg() {
     a.click();
   };
 
+  let onGenerateDispMap = () => {
+    //TODO: implement this (might pass svg data to the other tab component and switch to that tab maybe)
+    console.log("Yet to be implemented ...");
+  };
+
   // File upload functions end ------------------------
 
   // Accordion Menu functions start -
@@ -133,7 +138,7 @@ function Dxf2Svg() {
             buttonIcon={<ArrowRightAltIcon />}
             color="primary"
             isInputFlag={false}
-            onButtonClick={onDownloadSvg}
+            onButtonClick={onGenerateDispMap}
           ></LabelledButton>
 
           {/* Display Generated Svg Accordion below --> */}

@@ -32,9 +32,17 @@ var child_process = require("child_process");
 // url is of the form localhost:3000/dxf2svg
 app.put("/dxf2svg", (req, res) => {
   // save the .dxf file onto server so that python script can be run on it
-  let fileName = "deneme1234.dxf";
+  let fileName = "deneme1234";
   let uploadPath =
-    __dirname + "/utility scripts/dxf2svg_python_script/IOFiles/" + fileName;
+    __dirname +
+    "/utility scripts/dxf2svg_python_script/IOFiles/" +
+    fileName +
+    ".dxf";
+  let downloadPath =
+    __dirname +
+    "/utility scripts/dxf2svg_python_script/IOFiles/" +
+    fileName +
+    ".svg";
 
   // Use the mv() method to place the file somewhere on your server
   req.files.dxf_file.mv(uploadPath, (err) => {
@@ -58,7 +66,7 @@ app.put("/dxf2svg", (req, res) => {
         "./utility scripts/dxf2svg_python_script/myVenv/bin/python",
         [
           "./utility scripts/dxf2svg_python_script/dxf2svg.py",
-          `./utility scripts/dxf2svg_python_script/IOFiles/${fileName}`,
+          uploadPath,
           // req.query.firstname,
           // req.query.lastname,
         ]
@@ -66,9 +74,13 @@ app.put("/dxf2svg", (req, res) => {
 
       // Takes stdout data from script which executed
       // with arguments and send this data to res object
+      const pythonSuccessfullFlag = "svg successfully generated";
       process.stdout.on("data", (data) => {
-        console.log(data.toString());
-        res.send(data.toString());
+        if (data.toString().trim() == pythonSuccessfullFlag) {
+          res.download(downloadPath); // send generated .svg file back to client.
+        } else {
+          res.send("something went wrong with the dxf2svg conversion script !");
+        }
       });
 
       process.stderr.on("data", (data) => {

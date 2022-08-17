@@ -128,4 +128,8 @@ if __name__ == '__main__':
     saveToSVG(svgFile, dxfData)
 
     svgFile.close()
+
+    # print on std.out to let nodejs now script finished executing successfully
+    nodeJsFlag = "svg successfully generated"
+    print(nodeJsFlag)
 # end: __main__
