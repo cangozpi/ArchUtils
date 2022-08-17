@@ -10,6 +10,8 @@ function LabelledButton({
   buttonIcon,
   color,
   onFileChange,
+  isInputFlag,
+  onButtonClick,
 }) {
   return (
     <div className="UploadDxfBtn">
@@ -23,10 +25,12 @@ function LabelledButton({
           color={color}
           size="small"
           endIcon={buttonIcon}
+          onClick={isInputFlag == false ? onButtonClick : null}
         >
           {buttonTxt}
-          {/* <input hidden type="file" name="file" onChange={onFileChange} /> */}
-          <input hidden accept=".dxf" type="file" onChange={onFileChange} />
+          {isInputFlag && (
+            <input hidden accept=".dxf" type="file" onChange={onFileChange} />
+          )}
         </Button>
       </Stack>
     </div>

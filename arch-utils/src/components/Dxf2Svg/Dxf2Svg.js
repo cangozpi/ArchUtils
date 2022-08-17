@@ -18,6 +18,8 @@ function Dxf2Svg() {
   // File upload functions start here ------------------------
   const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
+  let [showSvgButtonsFlag, setShowSvgButtonsFlag] = React.useState(false);
+  let [generatedSvg, setGeneratedSvg] = React.useState(null);
 
   // uploads chosen file to the server by making PUT request
   let PostDxfFileToServer = () => {
@@ -27,9 +29,18 @@ function Dxf2Svg() {
       method: "PUT",
       body: formData,
     })
-      .then((response) => response.json())
-      .then((result) => {
-        console.log("Success:", result);
+      .then((response) => {
+        if (response.status == 200) {
+          // prompt user to download the generated .svg file
+          response.blob().then((blob) => {
+            let url = window.URL.createObjectURL(blob);
+            setGeneratedSvg({
+              url: url,
+              name: `${fileState.name.split(".")[0]}.svg`,
+            });
+            setShowSvgButtonsFlag(true);
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -49,6 +60,14 @@ function Dxf2Svg() {
       PostDxfFileToServer();
     }
   }, [fileState]);
+
+  let onDownloadSvg = () => {
+    let a = document.createElement("a");
+    a.href = generatedSvg.url;
+    a.download = generatedSvg.name;
+    a.click();
+  };
+
   // File upload functions end ------------------------
 
   // Accordion Menu functions start -
@@ -58,11 +77,6 @@ function Dxf2Svg() {
     setExpanded(isExpanded ? panel : false);
   };
   // Accordion Menu functions end ------------------------
-
-  React.useEffect(() => {
-    // console.log(dxfFile);
-    //   dxf2svgConversionHelper();
-  }, []);
 
   return (
     <div className="dxf2Svg-container">
@@ -81,65 +95,76 @@ function Dxf2Svg() {
         buttonIcon={<FileUploadIcon />}
         color="success"
         onFileChange={onFileChange}
+        isInputFlag={true}
       ></LabelledButton>
 
-      <LabelledButton
-        labelTxt={
-          <>
-            Download Generated <em>.svg</em>
-          </>
-        }
-        buttonTxt={
-          <>
-            Download <pre> </pre>{" "}
-            <em style={{ textTransform: "none" }}> .svg</em>
-          </>
-        }
-        buttonIcon={<DownloadIcon />}
-        color="primary"
-      ></LabelledButton>
+      {showSvgButtonsFlag && (
+        <>
+          <LabelledButton
+            labelTxt={
+              <>
+                Download Generated <em>.svg</em>
+              </>
+            }
+            buttonTxt={
+              <>
+                Download <pre> </pre>{" "}
+                <em style={{ textTransform: "none" }}> .svg</em>
+              </>
+            }
+            buttonIcon={<DownloadIcon />}
+            color="primary"
+            isInputFlag={false}
+            onButtonClick={onDownloadSvg}
+          ></LabelledButton>
 
-      <LabelledButton
-        labelTxt={
-          <>
-            Generate Displacement Map from the Generated <em>.svg</em>
-          </>
-        }
-        buttonTxt={
-          <>
-            Generate <pre> </pre>{" "}
-            <em style={{ textTransform: "none" }}> Displacement Map</em>
-          </>
-        }
-        buttonIcon={<ArrowRightAltIcon />}
-        color="primary"
-      ></LabelledButton>
+          <LabelledButton
+            labelTxt={
+              <>
+                Generate Displacement Map from the Generated <em>.svg</em>
+              </>
+            }
+            buttonTxt={
+              <>
+                Generate <pre> </pre>{" "}
+                <em style={{ textTransform: "none" }}> Displacement Map</em>
+              </>
+            }
+            buttonIcon={<ArrowRightAltIcon />}
+            color="primary"
+            isInputFlag={false}
+            onButtonClick={onDownloadSvg}
+          ></LabelledButton>
 
-      {/* Display Generated Svg Accordion below --> */}
-      <div className="generatedSvgAccordion">
-        <Accordion
-          expanded={expanded === "panel1"}
-          onChange={handleChange("panel1")}
-        >
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1bh-content"
-            id="panel1bh-header"
-          >
-            <Typography sx={{ width: "33%", flexShrink: 0, fontWeight: 600 }}>
-              Preview
-            </Typography>
-            <Typography sx={{ color: "text.secondary" }}>
-              Show Generated <em>.svg</em>
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography>
-              To be Implemented ... Generated Map will be displayed here.
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      </div>
+          {/* Display Generated Svg Accordion below --> */}
+          <div className="generatedSvgAccordion">
+            <Accordion
+              expanded={expanded === "panel1"}
+              onChange={handleChange("panel1")}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1bh-content"
+                id="panel1bh-header"
+              >
+                <Typography
+                  sx={{ width: "33%", flexShrink: 0, fontWeight: 600 }}
+                >
+                  Preview
+                </Typography>
+                <Typography sx={{ color: "text.secondary" }}>
+                  Show Generated <em>.svg</em>
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography>
+                  To be Implemented ... Generated Map will be displayed here.
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          </div>
+        </>
+      )}
     </div>
   );
 }
