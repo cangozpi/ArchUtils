@@ -1,3 +1,4 @@
+var fs = require("fs");
 var cors = require("cors");
 var express = require("express");
 
@@ -77,15 +78,21 @@ app.put("/dxf2svg", (req, res) => {
       const pythonSuccessfullFlag = "svg successfully generated";
       process.stdout.on("data", (data) => {
         if (data.toString().trim() == pythonSuccessfullFlag) {
-          res.download(downloadPath); // send generated .svg file back to client.
+          // send generated .svg file back to client.
+          res.download(downloadPath, () => {
+            fs.unlink(downloadPath, (err) => {});
+            fs.unlink(uploadPath, (err) => {});
+          });
         } else {
           res.send("something went wrong with the dxf2svg conversion script !");
+          fs.unlink(uploadPath);
         }
       });
 
       process.stderr.on("data", (data) => {
         console.log(data, data.toString());
         res.send(data.toString());
+        fs.unlink(uploadPath, (err) => console.error(err));
       });
     }
   });
