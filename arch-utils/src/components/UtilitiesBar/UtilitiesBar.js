@@ -4,6 +4,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
+import "./UtilitiesBar.css";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -45,18 +46,39 @@ export default function BasicTabs(props) {
     setValue(newValue);
   };
 
+  // handle window resizing
+  let [windowWidth, setWindowWidth] = React.useState(window.innerWidth);
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  React.useLayoutEffect(() => {
+    window.addEventListener("resize", handleResize, false);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [windowWidth]);
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          centered
+          orientation={windowWidth <= 640 ? "vertical" : "horizontal"}
+          className="tabs"
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Convert dxf to svg" {...a11yProps(0)} />
-          <Tab label="Generate Displacement Map from svg" {...a11yProps(1)} />
-          <Tab label="Generate Mesh from Displacement Map" {...a11yProps(2)} />
+          <Tab className="tab" label="Convert dxf to svg" {...a11yProps(0)} />
+          <Tab
+            className="tab"
+            label="Generate Displacement Map from svg"
+            {...a11yProps(1)}
+          />
+          <Tab
+            className="tab"
+            label="Generate Mesh from Displacement Map"
+            {...a11yProps(2)}
+          />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>

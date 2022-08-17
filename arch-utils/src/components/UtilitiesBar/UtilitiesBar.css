@@ -1,10 +1,27 @@
-.utilities_container {
-    background-color: violet;
-}
-
-ul {
-    display: flex;
+.tabs .MuiTabs-flexContainer.css-heg063-MuiTabs-flexContainer {
     justify-content: center;
     align-items: center;
-    list-style-type: none;
+    display: flex;
+}
+
+@media screen and (max-width:915px) {
+    .tab {
+        font-size: 0.6em !important;
+        font-weight: bolder !important;
+    }
+}
+
+@media screen and (max-width:640px) {
+    .tabs {
+        display: flex !important;
+        flex-direction: column !important;
+        /* font-size: 0.6em !important;
+        font-weight: bolder !important; */
+        font-weight: bolder !important;
+        font-size: 1.2em !important;
+    }
+
+    .tabs .MuiTabs-flexContainer.MuiTabs-flexContainerVertical.css-lfwcke-MuiTabs-flexContainer {
+        align-items: center !important;
+    } 
 }
