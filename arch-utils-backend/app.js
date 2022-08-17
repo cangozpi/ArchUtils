@@ -75,8 +75,6 @@ app.put("/dxf2svg", (req, res) => {
         console.log(data, data.toString());
         res.send(data.toString());
       });
-
-      console.log("sv call ends here =======");
     }
   });
 });

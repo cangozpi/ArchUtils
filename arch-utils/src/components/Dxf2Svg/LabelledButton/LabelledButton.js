@@ -25,14 +25,8 @@ function LabelledButton({
           endIcon={buttonIcon}
         >
           {buttonTxt}
-          <input hidden type="file" name="file" onChange={onFileChange} />
-          {/* <input
-            hidden
-            accept=".dxf"
-            multiple
-            type="file"
-            onChange={onFileChange}
-          /> */}
+          {/* <input hidden type="file" name="file" onChange={onFileChange} /> */}
+          <input hidden accept=".dxf" type="file" onChange={onFileChange} />
         </Button>
       </Stack>
     </div>

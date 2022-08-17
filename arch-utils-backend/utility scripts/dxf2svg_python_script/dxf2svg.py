@@ -114,11 +114,9 @@ def saveToSVG(svgFile, dxfData):
 
 if __name__ == '__main__':
     # TODO: error handling
-    print("here we GOOO")
     if len(sys.argv) < 2:
         sys.exit('Usage: {0} file-name'.format(sys.argv[0]))
     filename = sys.argv[1]
-    print(filename)
     # grab data from file
     dxfData = dxfgrabber.readfile(filename)
 
@@ -131,6 +129,3 @@ if __name__ == '__main__':
 
     svgFile.close()
 # end: __main__
-
-# "./IOFiles/deneme1234.dxf"
-# './IOFiles/deneme1234.dxf'
