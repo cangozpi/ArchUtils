@@ -5,6 +5,10 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  
+  /* variables defined by me are below --> */
+  --material-ui-success-color: #1976d2;
+  --material-ui-text-color: rgba(0, 0, 0, 0.6);
 }
 
 code {
