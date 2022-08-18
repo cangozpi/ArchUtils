@@ -1,8 +1,8 @@
-function all(prcnt_inc, z_value, radius, id) {
+function all(path_array, prcnt_inc, z_value, radius, id) {
   // =======================
 
-  var mySVG = document.getElementById(id);
-  var path_array = mySVG.children; // --> array[path]
+  //   var mySVG = document.getElementById(id);
+  //   var path_array = mySVG.children; // --> array[path]
 
   // Move obj element along path based on percentage of total length
   function SvgCoordinateExtractor(path, prcnt) {
