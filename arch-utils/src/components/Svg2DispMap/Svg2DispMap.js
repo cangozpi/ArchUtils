@@ -57,8 +57,8 @@ function Svg2DispMap() {
 
   let onDownloadSvg = () => {
     let a = document.createElement("a");
-    a.href = generatedSvg.url;
-    a.download = generatedSvg.name;
+    a.href = imageDataUrl;
+    a.download = generatedSvg.name.split(".")[0].trim() + ".jpg";
     a.click();
   };
 
@@ -116,12 +116,10 @@ function Svg2DispMap() {
 
   let [showGeneratedDispMap, setShowGeneratedDispMap] = useState(false);
   useEffect(() => {
-    console.log(imageDataUrl, "URL GELDİİ SICAK SICAKK");
     // display image
     if (imageDataUrl != undefined) {
       setShowGeneratedDispMap(true);
     }
-    // set download link's href to imageDataUrl
   }, [imageDataUrl]);
 
   return (
@@ -215,24 +213,12 @@ function Svg2DispMap() {
                     Preview
                   </Typography>
                   <Typography sx={{ color: "text.secondary" }}>
-                    Show Generated <em>.svg</em>
+                    Show Generated Displacement Map (<em>.jpg</em>)
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                   {showGeneratedDispMap && (
                     <img style={{ width: "100%" }} src={imageDataUrl}></img>
-                  )}
-                  {true && (
-                    <div className="content">
-                      <div className="svgPlaceholder">
-                        <p>
-                          <a href="" id="link" download="image.jpg">
-                            Download Displacement Map
-                          </a>
-                        </p>
-                        {/* <SvgIcon id="mySVG"></SvgIcon> */}
-                      </div>
-                    </div>
                   )}
 
                   {showGeneratedDispMap == false && (
