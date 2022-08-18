@@ -1,8 +1,9 @@
-function all(path_array, prcnt_inc, z_value, radius, id) {
+function all(svg_el, prcnt_inc, z_value, radius, id, setImageDataUrl) {
   // =======================
-
   //   var mySVG = document.getElementById(id);
   //   var path_array = mySVG.children; // --> array[path]
+
+  var path_array = svg_el.children; // --> array[path]
 
   // Move obj element along path based on percentage of total length
   function SvgCoordinateExtractor(path, prcnt) {
@@ -115,7 +116,6 @@ function all(path_array, prcnt_inc, z_value, radius, id) {
   function ColorContours(path_array) {
     let path_collision_array = sortPaths(path_array);
     let heightMapInfo = inferColorIncrement(path_collision_array);
-
     // Note that higher the contours_outside_count value, the higher the height
     //coordinate in the heightmap of the points
 
@@ -130,9 +130,8 @@ function all(path_array, prcnt_inc, z_value, radius, id) {
   ColorContours(path_array);
 
   function svg2img() {
-    const svg = document.querySelector("svg");
-    const { x, y, width, height } = svg.viewBox.baseVal;
-    const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+    const { x, y, width, height } = svg_el.viewBox.baseVal;
+    const blob = new Blob([svg_el.outerHTML], { type: "image/svg+xml" });
     const url = URL.createObjectURL(blob);
     const image = document.createElement("img");
     image.src = url;
@@ -142,12 +141,33 @@ function all(path_array, prcnt_inc, z_value, radius, id) {
       canvas.height = height;
       const context = canvas.getContext("2d");
       context.drawImage(image, x, y, width, height);
-      const link = document.getElementById("link");
-      link.href = canvas.toDataURL("image/jpeg");
       URL.revokeObjectURL(url);
+      let img_data_url = canvas.toDataURL("image/jpeg");
+
+      setImageDataUrl(img_data_url);
     });
   }
   svg2img();
+  //   function svg2img() {
+  //     const svg = document.querySelector("svg");
+  //     console.log(svg);
+  //     const { x, y, width, height } = svg.viewBox.baseVal;
+  //     const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
+  //     const url = URL.createObjectURL(blob);
+  //     const image = document.createElement("img");
+  //     image.src = url;
+  //     image.addEventListener("load", () => {
+  //       const canvas = document.createElement("canvas");
+  //       canvas.width = width;
+  //       canvas.height = height;
+  //       const context = canvas.getContext("2d");
+  //       context.drawImage(image, x, y, width, height);
+  //       const link = document.getElementById("link");
+  //       link.href = canvas.toDataURL("image/jpeg");
+  //       URL.revokeObjectURL(url);
+  //     });
+  //   }
+  //   svg2img();
 }
 
 export default all;

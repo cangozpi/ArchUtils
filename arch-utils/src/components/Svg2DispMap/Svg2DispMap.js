@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./Svg2DispMap.css";
 import svg2DispMapHelper from "./helpers/svg2DispMapHelper";
-import { ReactComponent as SvgIcon } from "./IsohipsTest.svg";
 // Labelled Buttons
 // /home/cangozpi/Desktop/coding/fiddle workspace/izohips/arch-utils/src/components/Svg2DispMap/Svg2DispMap.js
 import LabelledButton from "../Dxf2Svg/LabelledButton/LabelledButton";
@@ -90,46 +89,40 @@ function Svg2DispMap() {
   useEffect(() => {
     if (showSvgButtonsFlag == true) {
       if (svgRef.current != undefined && svgObjectRendered == false) {
-        // obtain dispMap from given fileState(.svg)
-        console.log(
-          svgRef,
-          svgRef.current
-          //   svgRef.current.contentDocument.all[0],
-          //   svgRef.current.type,
-          //   svgRef.current.data
-          //   "heyo"
-          //   svgRef.current.contentDocument.all[0].tagname
-          //   svgRef.current.contentDocument.children.nodeName
-        );
-        let amk = document.createElement("object");
-        amk.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-        amk.setAttribute("version", "1.1");
-        amk.setAttribute(
-          "viewBox",
-          "-6.784641889307749 -552.2992137315277 790.6527496216859 1798.5285072404827"
-        );
-        amk.setAttribute("data", generatedSvg.url);
-        amk.setAttribute("class", "mauw");
-
-        let b = document.querySelector(".generatedSvgAccordion");
-        b.appendChild(amk);
         setSvgObjectRendered(true);
       }
     }
   }, [showSvgButtonsFlag]);
 
-  let [a, setA] = useState(false);
+  let [updateState, setUpdateState] = useState(false);
+  let [imageDataUrl, setImageDataUrl] = useState();
   useEffect(() => {
-    console.log(svgObjectRendered);
     if (svgObjectRendered == true) {
-      if (a == false) {
-        setA(true);
+      if (updateState == false) {
+        setUpdateState(true);
       } else {
-        let a = document.querySelector(".mauw");
-        console.log("Rendereeed", a.contentDocument.documentElement.children);
+        let svg_el = svgRef.current.contentDocument.documentElement;
+        svg2DispMapHelper(
+          svg_el,
+          prcnt_inc,
+          z_value,
+          radius,
+          id,
+          setImageDataUrl
+        );
       }
     }
-  }, [svgObjectRendered, a]);
+  }, [svgObjectRendered, updateState]);
+
+  let [showGeneratedDispMap, setShowGeneratedDispMap] = useState(false);
+  useEffect(() => {
+    console.log(imageDataUrl, "URL GELDİİ SICAK SICAKK");
+    // display image
+    if (imageDataUrl != undefined) {
+      setShowGeneratedDispMap(true);
+    }
+    // set download link's href to imageDataUrl
+  }, [imageDataUrl]);
 
   return (
     <>
@@ -204,7 +197,7 @@ function Svg2DispMap() {
               onButtonClick={onGenerateDispMap}
             ></LabelledButton>
 
-            {/* Display Generated Svg Accordion below --> */}
+            {/* Display Generated DispMap Accordion below --> */}
             <div className="break"></div>
             <div className="generatedSvgAccordion">
               <Accordion
@@ -226,13 +219,10 @@ function Svg2DispMap() {
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                  {/* <img
-                  className="dxf2svg_svg"
-                  src={generatedSvg.url}
-                  alt="generated svg"
-                /> */}
-
-                  {/* {true && (
+                  {showGeneratedDispMap && (
+                    <img style={{ width: "100%" }} src={imageDataUrl}></img>
+                  )}
+                  {true && (
                     <div className="content">
                       <div className="svgPlaceholder">
                         <p>
@@ -240,17 +230,19 @@ function Svg2DispMap() {
                             Download Displacement Map
                           </a>
                         </p>
-                        <SvgIcon id="mySVG"></SvgIcon>
+                        {/* <SvgIcon id="mySVG"></SvgIcon> */}
                       </div>
                     </div>
-                  )} */}
+                  )}
 
-                  <object
-                    ref={svgRef}
-                    type="image/svg+xml"
-                    data={generatedSvg.url}
-                    className="dxf2svg_svg"
-                  ></object>
+                  {showGeneratedDispMap == false && (
+                    <object
+                      ref={svgRef}
+                      type="image/svg+xml"
+                      data={generatedSvg.url}
+                      className="dxf2svg_svg"
+                    ></object>
+                  )}
                 </AccordionDetails>
               </Accordion>
             </div>
