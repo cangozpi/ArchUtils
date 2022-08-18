@@ -156,17 +156,19 @@ function RenderDispMapMesh({
           isInputFlag={true}
           acceptedType=".jpg"
         >
-          <Button
-            variant="contained"
-            component="label"
-            color="success"
-            size="small"
-            endIcon={<FileUploadIcon />}
-            onClick={useGeneratedJpgHandle}
-            style={{ marginTop: "0.5em" }}
-          >
-            Use Generated <em>.jpg</em>
-          </Button>
+          {getPreviouslyGeneratedFileState()?.name.split(".")[1] == "jpg" && (
+            <Button
+              variant="contained"
+              component="label"
+              color="success"
+              size="small"
+              endIcon={<FileUploadIcon />}
+              onClick={useGeneratedJpgHandle}
+              style={{ marginTop: "0.5em" }}
+            >
+              Use Generated <em>.jpg</em>
+            </Button>
+          )}
         </LabelledButton>
 
         {showButtonsFlag && (

@@ -160,17 +160,19 @@ function Svg2DispMap({
           isInputFlag={true}
           acceptedType=".svg"
         >
-          <Button
-            variant="contained"
-            component="label"
-            color="success"
-            size="small"
-            endIcon={<FileUploadIcon />}
-            onClick={useGeneratedSvgHandle}
-            style={{ marginTop: "0.5em" }}
-          >
-            Use Generated <em>.svg</em>
-          </Button>
+          {getPreviouslyGeneratedFileState()?.name.split(".")[1] == "svg" && (
+            <Button
+              variant="contained"
+              component="label"
+              color="success"
+              size="small"
+              endIcon={<FileUploadIcon />}
+              onClick={useGeneratedSvgHandle}
+              style={{ marginTop: "0.5em" }}
+            >
+              Use Generated <em>.svg</em>
+            </Button>
+          )}
         </LabelledButton>
 
         {showButtonsFlag && (
