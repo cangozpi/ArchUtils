@@ -41,6 +41,14 @@ function a11yProps(index) {
 }
 
 export default function BasicTabs(props) {
+  let [previouslyGeneratedFileState, setPreviouslyGeneratedFileState] =
+    React.useState();
+
+  function getPreviouslyGeneratedFileState() {
+    return previouslyGeneratedFileState;
+  }
+
+  // =======================
   const [value, setValue] = React.useState(0);
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -83,11 +91,20 @@ export default function BasicTabs(props) {
       </Box>
       <TabPanel value={value} index={0}>
         {/* Item One */}
-        {props.children[0]}
+        {/* {props.children[0]} */}
+        {React.cloneElement(props.children[0], {
+          handleChangeTabs: handleChange,
+          setPreviouslyGeneratedFileState: setPreviouslyGeneratedFileState,
+        })}
       </TabPanel>
       <TabPanel value={value} index={1}>
         {/* Item Two */}
-        {props.children[1]}
+        {/* {props.children[1]} */}
+        {React.cloneElement(props.children[1], {
+          handleChangeTabs: handleChange,
+          setPreviouslyGeneratedFileState: setPreviouslyGeneratedFileState,
+          getPreviouslyGeneratedFileState: getPreviouslyGeneratedFileState,
+        })}
       </TabPanel>
       <TabPanel value={value} index={2}>
         {/* Item Three */}

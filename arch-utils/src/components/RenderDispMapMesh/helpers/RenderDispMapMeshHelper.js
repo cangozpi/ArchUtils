@@ -6,8 +6,6 @@ function all(dispMapImage, camera_x, camera_y, camera_z) {
   const camera = createCamera();
   const renderer = createRenderer();
 
-  // const textureLoader = new THREE.TextureLoader();
-  // const plyLoader = new THREE.PLYLoader();
   const controls = createOrbitsControls(camera, renderer);
 
   function createCamera() {

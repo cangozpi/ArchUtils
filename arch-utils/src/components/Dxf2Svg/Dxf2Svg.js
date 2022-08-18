@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 // Dxf2Svg conversion helper utilities
 
-function Dxf2Svg() {
+function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
   // File upload functions start here ------------------------
   const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
@@ -68,8 +68,10 @@ function Dxf2Svg() {
   };
 
   let onGenerateDispMap = () => {
-    //TODO: implement this (might pass svg data to the other tab component and switch to that tab maybe)
-    console.log("Yet to be implemented ...");
+    // pass fileState to svg2DispMap component
+    setPreviouslyGeneratedFileState(generatedSvg);
+    // swith Tabs to svg2DispMap component
+    handleChangeTabs(undefined, 1);
   };
 
   // File upload functions end ------------------------

@@ -8,7 +8,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import LabelledButton from "../Dxf2Svg/LabelledButton/LabelledButton";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import DownloadIcon from "@mui/icons-material/Download";
-import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import Button from "@mui/material/Button";
 // Accordion menu below
 import Accordion from "@mui/material/Accordion";
@@ -103,10 +102,10 @@ function RenderDispMapMesh() {
   }, [uploadedSvg]);
 
   useEffect(() => {
-    if (threeJsObject != undefined) {
-      console.log(threeJsObject);
-      console.log(threeJsObject.renderer_dom);
-    }
+    // if (threeJsObject != undefined) {
+    //   console.log(threeJsObject);
+    //   console.log(threeJsObject.renderer_dom);
+    // }
   }, [threeJsObject]);
 
   let [meshRendered, setmeshRendered] = React.useState(false);

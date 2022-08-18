@@ -21,7 +21,11 @@ let z_value = 100; // z value of the data Points //TODO: make this in between di
 let radius = 3; // radius of each heatmap data point
 let id = "mySVG";
 
-function Svg2DispMap() {
+function Svg2DispMap({
+  handleChangeTabs,
+  setPreviouslyGeneratedFileState,
+  getPreviouslyGeneratedFileState,
+}) {
   // File upload functions start here ------------------------
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
   let [showButtonsFlag, setShowButtonsFlag] = React.useState(false);
@@ -120,6 +124,15 @@ function Svg2DispMap() {
     }
   }, [imageDataUrl]);
 
+  let useGeneratedSvgHandle = (e) => {
+    // set uploadedSvg to previously generated svg content
+    let previouslyGeneratedFileState = getPreviouslyGeneratedFileState();
+    setUploadedSvg({
+      url: previouslyGeneratedFileState.url,
+      name: previouslyGeneratedFileState.name,
+    });
+  };
+
   return (
     <>
       <div className="dxf2Svg-container">
@@ -148,9 +161,7 @@ function Svg2DispMap() {
             color="success"
             size="small"
             endIcon={<FileUploadIcon />}
-            onClick={() =>
-              console.log("Use Generated Svg yet to be Implemented ...")
-            }
+            onClick={useGeneratedSvgHandle}
             style={{ marginTop: "0.5em" }}
           >
             Use Generated <em>.svg</em>
