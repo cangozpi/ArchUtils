@@ -55,7 +55,11 @@ function all(dispMapImage, camera_x, camera_y, camera_z) {
   }
 
   // Add rendering dom element to page.
-  document.body.appendChild(renderer.domElement);
+  // document.body.appendChild(renderer.domElement);
+  let threeJsCanvasContainer = document.querySelector(
+    ".threeJsCanvasContainer"
+  );
+  threeJsCanvasContainer.appendChild(renderer.domElement);
 
   // Setup scene.
   scene.background = new THREE.Color(0x303f9f);
@@ -123,7 +127,15 @@ function all(dispMapImage, camera_x, camera_y, camera_z) {
     renderer.render(scene, camera);
   };
 
-  render();
+  // render();
+
+  return {
+    renderer_dom: renderer.domElement,
+    renderer: renderer,
+    scene: scene,
+    camera: camera,
+    render: render,
+  };
 }
 
 export default all;

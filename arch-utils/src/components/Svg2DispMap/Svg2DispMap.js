@@ -23,7 +23,6 @@ let id = "mySVG";
 
 function Svg2DispMap() {
   // File upload functions start here ------------------------
-  const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
   let [showButtonsFlag, setShowButtonsFlag] = React.useState(false);
   let [uploadedSvg, setUploadedSvg] = React.useState(null);
