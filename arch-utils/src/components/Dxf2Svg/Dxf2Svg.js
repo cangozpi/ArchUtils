@@ -100,6 +100,7 @@ function Dxf2Svg() {
         color="success"
         onFileChange={onFileChange}
         isInputFlag={true}
+        acceptedType=".dxf"
       ></LabelledButton>
 
       {showSvgButtonsFlag && (

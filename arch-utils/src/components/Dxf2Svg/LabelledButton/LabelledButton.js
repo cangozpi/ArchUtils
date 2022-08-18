@@ -11,14 +11,16 @@ function LabelledButton({
   color,
   onFileChange,
   isInputFlag,
+  acceptedType,
   onButtonClick,
+  children,
 }) {
   return (
     <div className="UploadDxfBtn">
       <div className="UploadDxfBtnLabel">
         <p>{labelTxt}</p>
       </div>
-      <Stack direction="row" alignItems="center" spacing={2}>
+      <Stack direction="column" alignItems="center" spacing={2}>
         <Button
           variant="contained"
           component="label"
@@ -29,9 +31,15 @@ function LabelledButton({
         >
           {buttonTxt}
           {isInputFlag && (
-            <input hidden accept=".dxf" type="file" onChange={onFileChange} />
+            <input
+              hidden
+              accept={acceptedType}
+              type="file"
+              onChange={onFileChange}
+            />
           )}
         </Button>
+        {children}
       </Stack>
     </div>
   );
