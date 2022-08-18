@@ -30,12 +30,16 @@ let camera_x = 0;
 let camera_y = 0;
 let camera_z = 1000;
 
-function RenderDispMapMesh() {
+function RenderDispMapMesh({
+  handleChangeTabs,
+  setPreviouslyGeneratedFileState,
+  getPreviouslyGeneratedFileState,
+}) {
   // ==================================================== menu functionality below
   // File upload functions start here ------------------------
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
   let [showButtonsFlag, setShowButtonsFlag] = React.useState(false);
-  let [uploadedSvg, setUploadedSvg] = React.useState(null);
+  let [uploadedJpg, setUploadedJpg] = React.useState(null);
 
   let onFileChange = (event) => {
     // Update the state
@@ -47,7 +51,7 @@ function RenderDispMapMesh() {
   let generateDispMap = () => {
     // Generate URL for the svg uploaded by the user
     let url = window.URL.createObjectURL(fileState);
-    setUploadedSvg({
+    setUploadedJpg({
       url: url,
       name: `${fileState.name.split(".")[0]}.jpg`,
     });
@@ -63,13 +67,17 @@ function RenderDispMapMesh() {
   let onDownloadJpg = () => {
     let a = document.createElement("a");
     // a.href = imageDataUrl; //TODO: uncomment this line with imageDataUrl value
-    a.download = uploadedSvg.name.split(".")[0].trim() + ".jpg";
+    a.download = uploadedJpg.name.split(".")[0].trim() + ".jpg";
     a.click();
   };
 
-  let onGenerateDispMap = () => {
-    //TODO: implement this (might pass svg data to the other tab component and switch to that tab maybe)
-    console.log("Yet to be implemented ...");
+  let useGeneratedJpgHandle = (e) => {
+    // set uploadedJpg to previously generated svg content
+    let previouslyGeneratedFileState = getPreviouslyGeneratedFileState();
+    setUploadedJpg({
+      url: previouslyGeneratedFileState.url,
+      name: previouslyGeneratedFileState.name,
+    });
   };
 
   // File upload functions end ------------------------
@@ -96,10 +104,10 @@ function RenderDispMapMesh() {
   //  };
 
   useEffect(() => {
-    if (uploadedSvg != null) {
+    if (uploadedJpg != null) {
       setShowButtonsFlag(true);
     }
-  }, [uploadedSvg]);
+  }, [uploadedJpg]);
 
   useEffect(() => {
     // if (threeJsObject != undefined) {
@@ -112,7 +120,7 @@ function RenderDispMapMesh() {
   useEffect(() => {
     if (showButtonsFlag == true) {
       if (meshRendered == false) {
-        let dispMapImage = uploadedSvg.url;
+        let dispMapImage = uploadedJpg.url;
         let threeJsObject = renderDispMapMeshHelper(
           dispMapImage,
           camera_x,
@@ -154,9 +162,7 @@ function RenderDispMapMesh() {
             color="success"
             size="small"
             endIcon={<FileUploadIcon />}
-            onClick={() =>
-              console.log("Use Generated jpg yet to be Implemented ...")
-            }
+            onClick={useGeneratedJpgHandle}
             style={{ marginTop: "0.5em" }}
           >
             Use Generated <em>.jpg</em>
