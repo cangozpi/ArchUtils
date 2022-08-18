@@ -64,8 +64,13 @@ function Svg2DispMap({
   };
 
   let onGenerateDispMap = () => {
-    //TODO: implement this (might pass svg data to the other tab component and switch to that tab maybe)
-    console.log("Yet to be implemented ...");
+    // pass fileState to svg2DispMap component
+    setPreviouslyGeneratedFileState({
+      url: imageDataUrl,
+      name: uploadedSvg.name.split(".")[0].trim() + ".jpg",
+    });
+    // swith Tabs to RenderDispMapMesh component
+    handleChangeTabs(undefined, 2);
   };
 
   // File upload functions end ------------------------

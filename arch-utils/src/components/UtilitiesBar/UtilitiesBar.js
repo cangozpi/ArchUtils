@@ -108,7 +108,12 @@ export default function BasicTabs(props) {
       </TabPanel>
       <TabPanel value={value} index={2}>
         {/* Item Three */}
-        {props.children[2]}
+        {/* {props.children[2]} */}
+        {React.cloneElement(props.children[2], {
+          handleChangeTabs: handleChange,
+          setPreviouslyGeneratedFileState: setPreviouslyGeneratedFileState,
+          getPreviouslyGeneratedFileState: getPreviouslyGeneratedFileState,
+        })}
       </TabPanel>
     </Box>
   );
