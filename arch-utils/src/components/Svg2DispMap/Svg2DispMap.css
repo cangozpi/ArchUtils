@@ -1,14 +1,4 @@
-.content {
-    background-color: gray;
-}
-
-svg {
-    overflow: visible;
-}
-
-    /* Above is from old */
 .dxf2Svg-container {
-    /* background-color: whitesmoke; */
     display: flex;
     justify-content: center;
     flex-wrap: wrap;

@@ -1,8 +1,4 @@
 function all(svg_el, prcnt_inc, z_value, radius, id, setImageDataUrl) {
-  // =======================
-  //   var mySVG = document.getElementById(id);
-  //   var path_array = mySVG.children; // --> array[path]
-
   var path_array = svg_el.children; // --> array[path]
 
   // Move obj element along path based on percentage of total length
@@ -148,26 +144,6 @@ function all(svg_el, prcnt_inc, z_value, radius, id, setImageDataUrl) {
     });
   }
   svg2img();
-  //   function svg2img() {
-  //     const svg = document.querySelector("svg");
-  //     console.log(svg);
-  //     const { x, y, width, height } = svg.viewBox.baseVal;
-  //     const blob = new Blob([svg.outerHTML], { type: "image/svg+xml" });
-  //     const url = URL.createObjectURL(blob);
-  //     const image = document.createElement("img");
-  //     image.src = url;
-  //     image.addEventListener("load", () => {
-  //       const canvas = document.createElement("canvas");
-  //       canvas.width = width;
-  //       canvas.height = height;
-  //       const context = canvas.getContext("2d");
-  //       context.drawImage(image, x, y, width, height);
-  //       const link = document.getElementById("link");
-  //       link.href = canvas.toDataURL("image/jpeg");
-  //       URL.revokeObjectURL(url);
-  //     });
-  //   }
-  //   svg2img();
 }
 
 export default all;

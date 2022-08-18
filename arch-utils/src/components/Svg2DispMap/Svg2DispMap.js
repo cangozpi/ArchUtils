@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./Svg2DispMap.css";
+// Svg2DispMap conversion utils
 import svg2DispMapHelper from "./helpers/svg2DispMapHelper";
 // Labelled Buttons
-// /home/cangozpi/Desktop/coding/fiddle workspace/izohips/arch-utils/src/components/Svg2DispMap/Svg2DispMap.js
 import LabelledButton from "../Dxf2Svg/LabelledButton/LabelledButton";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import DownloadIcon from "@mui/icons-material/Download";
@@ -14,7 +14,6 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// Svg2DispMap conversion helper utilities
 
 // Global Variables ======
 let prcnt_inc = 0.5; // percentage(%) increment wrt length of each path/contour in svg
@@ -26,9 +25,8 @@ function Svg2DispMap() {
   // File upload functions start here ------------------------
   const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
-  let [showSvgButtonsFlag, setShowSvgButtonsFlag] = React.useState(false);
-  let [generatedSvg, setGeneratedSvg] = React.useState(null);
-  let [generatedDispMap, setGeneratedDispMap] = React.useState(null);
+  let [showButtonsFlag, setShowButtonsFlag] = React.useState(false);
+  let [uploadedSvg, setUploadedSvg] = React.useState(null);
 
   let onFileChange = (event) => {
     // Update the state
@@ -42,7 +40,7 @@ function Svg2DispMap() {
   let generateDispMap = () => {
     // Generate URL for the svg uploaded by the user
     let url = window.URL.createObjectURL(fileState);
-    setGeneratedSvg({
+    setUploadedSvg({
       url: url,
       name: `${fileState.name.split(".")[0]}.svg`,
     });
@@ -55,10 +53,10 @@ function Svg2DispMap() {
     }
   }, [fileState]);
 
-  let onDownloadSvg = () => {
+  let onDownloadJpg = () => {
     let a = document.createElement("a");
     a.href = imageDataUrl;
-    a.download = generatedSvg.name.split(".")[0].trim() + ".jpg";
+    a.download = uploadedSvg.name.split(".")[0].trim() + ".jpg";
     a.click();
   };
 
@@ -78,21 +76,22 @@ function Svg2DispMap() {
   // Accordion Menu functions end ------------------------
 
   // ===================================================================================
+  //   svg to DispMap conversion functionality below:
 
   useEffect(() => {
-    if (generatedSvg != null) {
-      setShowSvgButtonsFlag(true);
+    if (uploadedSvg != null) {
+      setShowButtonsFlag(true);
     }
-  }, [generatedSvg]);
+  }, [uploadedSvg]);
 
   let [svgObjectRendered, setSvgObjectRendered] = React.useState(false);
   useEffect(() => {
-    if (showSvgButtonsFlag == true) {
+    if (showButtonsFlag == true) {
       if (svgRef.current != undefined && svgObjectRendered == false) {
         setSvgObjectRendered(true);
       }
     }
-  }, [showSvgButtonsFlag]);
+  }, [showButtonsFlag]);
 
   let [updateState, setUpdateState] = useState(false);
   let [imageDataUrl, setImageDataUrl] = useState();
@@ -124,7 +123,6 @@ function Svg2DispMap() {
 
   return (
     <>
-      {/* ======================================================================== */}
       <div className="dxf2Svg-container">
         {/* Labelled Buttons Below --> */}
         <LabelledButton
@@ -160,7 +158,7 @@ function Svg2DispMap() {
           </Button>
         </LabelledButton>
 
-        {showSvgButtonsFlag && (
+        {showButtonsFlag && (
           <>
             <LabelledButton
               labelTxt={<>Download Generated Displacement Map</>}
@@ -173,7 +171,7 @@ function Svg2DispMap() {
               buttonIcon={<DownloadIcon />}
               color="primary"
               isInputFlag={false}
-              onButtonClick={onDownloadSvg}
+              onButtonClick={onDownloadJpg}
             ></LabelledButton>
 
             <LabelledButton
@@ -225,7 +223,7 @@ function Svg2DispMap() {
                     <object
                       ref={svgRef}
                       type="image/svg+xml"
-                      data={generatedSvg.url}
+                      data={uploadedSvg.url}
                       className="dxf2svg_svg"
                     ></object>
                   )}
