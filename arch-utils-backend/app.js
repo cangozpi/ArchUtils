@@ -1,4 +1,5 @@
 var fs = require("fs");
+const { v4: uuidv4 } = require("uuid");
 var cors = require("cors");
 var express = require("express");
 
@@ -33,17 +34,45 @@ var child_process = require("child_process");
 // url is of the form localhost:3000/dxf2svg
 app.put("/dxf2svg", (req, res) => {
   // save the .dxf file onto server so that python script can be run on it
-  let fileName = "deneme1234";
-  let uploadPath =
-    __dirname +
-    "/utility scripts/dxf2svg_python_script/IOFiles/" +
-    fileName +
-    ".dxf";
-  let downloadPath =
-    __dirname +
-    "/utility scripts/dxf2svg_python_script/IOFiles/" +
-    fileName +
-    ".svg";
+
+  // save original file name
+  const pythonBinaryDir =
+    "./utility scripts/dxf2svg_python_script/myVenv/bin/python";
+  const scriptDir = "./utility scripts/dxf2svg_python_script/dxf2svg.py";
+  const originalFileName = req.files.dxf_file.name;
+  const timeoutDuration = 50000;
+  // create unique name for the file
+  let basePath =
+    __dirname + "/utility scripts/dxf2svg_python_script/IOFiles/" + uuidv4();
+
+  let uploadPath = basePath + ".dxf";
+
+  // setTimeoutLimit for file generation process
+  setTimeout(() => {
+    if (fs.existsSync(uploadPath) == true) {
+      return res
+        .status(500)
+        .send(
+          `Time out Error. Could not generate your file within the given time limit ${timeoutDuration} seconds`
+        );
+    }
+  }, timeoutDuration);
+
+  // check if the uuid file name is unique
+  try {
+    while (fs.existsSync(uploadPath)) {
+      //file exists, generate new name
+      basePath =
+        __dirname +
+        "/utility scripts/dxf2svg_python_script/IOFiles/" +
+        uuidv4();
+      uploadPath = basePath + ".dxf";
+    }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+
+  let downloadPath = basePath + ".svg";
 
   // Use the mv() method to place the file somewhere on your server
   req.files.dxf_file.mv(uploadPath, (err) => {
@@ -60,18 +89,8 @@ app.put("/dxf2svg", (req, res) => {
       // 1. type_of_script
       // 2. list containing Path of the script
       //    and arguments for the script
-      // E.g : http://localhost:3000/name?firstname=Mike&lastname=Will
-      // so, first name = Mike and last name = Will
 
-      var process = spawn(
-        "./utility scripts/dxf2svg_python_script/myVenv/bin/python",
-        [
-          "./utility scripts/dxf2svg_python_script/dxf2svg.py",
-          uploadPath,
-          // req.query.firstname,
-          // req.query.lastname,
-        ]
-      );
+      var process = spawn(pythonBinaryDir, [scriptDir, uploadPath]);
 
       // Takes stdout data from script which executed
       // with arguments and send this data to res object
