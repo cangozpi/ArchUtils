@@ -11,7 +11,8 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-// Dxf2Svg conversion helper utilities
+
+import Swal from "sweetalert2";
 
 function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
   // File upload functions start here ------------------------
@@ -50,6 +51,15 @@ function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
     // Update the state
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
+        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
+        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
+      `,
+        "success"
+      );
     }
   };
 

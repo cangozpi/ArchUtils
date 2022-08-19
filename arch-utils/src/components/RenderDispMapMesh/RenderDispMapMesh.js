@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./RenderDispMapMesh.css";
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-// import { OrbitControls } from "https://unpkg.com/three@<version>/examples/jsm/controls/OrbitControls.js";
+import Swal from "sweetalert2";
 
 // Labelled Buttons
 import LabelledButton from "../Dxf2Svg/LabelledButton/LabelledButton";
@@ -16,7 +14,9 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+// Helper utility to help with rendering mesh using Three Js
 import renderDispMapMeshHelper from "./helpers/RenderDispMapMeshHelper";
+import normalMapGenerationHelper from "./helpers/normalMapGenerationHelper";
 
 // Global Variables ======
 let prcnt_inc = 0.5; // percentage(%) increment wrt length of each path/contour in svg
@@ -26,9 +26,9 @@ let id = "mySVG";
 
 /// ================================================== 3D rendering variables below:
 
-let camera_x = 0;
-let camera_y = 0;
-let camera_z = 1000;
+let camera_x = -610;
+let camera_y = 615;
+let camera_z = 780;
 
 function RenderDispMapMesh({
   handleChangeTabs,
@@ -45,6 +45,16 @@ function RenderDispMapMesh({
     // Update the state
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
+      // Display uploaded file information to the user
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
+        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
+        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
+      `,
+        "success"
+      );
     }
   };
 
@@ -63,13 +73,6 @@ function RenderDispMapMesh({
       generateDispMap();
     }
   }, [fileState]);
-
-  let onDownloadJpg = () => {
-    let a = document.createElement("a");
-    // a.href = imageDataUrl; //TODO: uncomment this line with imageDataUrl value
-    a.download = uploadedJpg.name.split(".")[0].trim() + ".jpg";
-    a.click();
-  };
 
   let useGeneratedJpgHandle = (e) => {
     // set uploadedJpg to previously generated svg content
@@ -101,6 +104,7 @@ function RenderDispMapMesh({
   //    scene: scene,
   //    camera: camera,
   //    render: render,
+  //    gui: gui,
   //  };
 
   useEffect(() => {
@@ -117,19 +121,40 @@ function RenderDispMapMesh({
   }, [threeJsObject]);
 
   let [meshRendered, setmeshRendered] = React.useState(false);
+  let [normalMapUrl, setNormalMapUrl] = React.useState();
+
+  useEffect(() => {
+    if (normalMapUrl != undefined) {
+      let dispMapImage = uploadedJpg.url;
+      let threeJsObject = renderDispMapMeshHelper(
+        dispMapImage,
+        normalMapUrl,
+        camera_x,
+        camera_y,
+        camera_z
+      );
+      setThreeJsObject(threeJsObject);
+      threeJsObject.render(); //start rendering the scene
+
+      // append three js dat gui
+      let threeCanvas = document.querySelector(".threeJsCanvasContainer");
+      //check if gui has been added before
+      let priorGuiList = document.querySelectorAll("#gui");
+      for (let i = 0; i < priorGuiList.length; i++) {
+        priorGuiList[i].remove();
+      }
+      // append new gui to DOM
+      threeCanvas.prepend(threeJsObject.gui.domElement);
+
+      setmeshRendered(true);
+    }
+  }, [normalMapUrl]);
+
   useEffect(() => {
     if (showButtonsFlag == true) {
       if (meshRendered == false) {
         let dispMapImage = uploadedJpg.url;
-        let threeJsObject = renderDispMapMeshHelper(
-          dispMapImage,
-          camera_x,
-          camera_y,
-          camera_z
-        );
-        setThreeJsObject(threeJsObject);
-        threeJsObject.render(); //start rendering the scene
-        setmeshRendered(true);
+        normalMapGenerationHelper(dispMapImage, setNormalMapUrl);
       }
     }
   }, [showButtonsFlag]);
@@ -173,20 +198,6 @@ function RenderDispMapMesh({
 
         {showButtonsFlag && (
           <>
-            <LabelledButton
-              labelTxt={<>Download Generated Mesh</>}
-              buttonTxt={
-                <>
-                  Download <pre> </pre>{" "}
-                  <em style={{ textTransform: "none" }}> .???</em>
-                </>
-              }
-              buttonIcon={<DownloadIcon />}
-              color="primary"
-              isInputFlag={false}
-              onButtonClick={onDownloadJpg}
-            ></LabelledButton>
-
             {/* Display Generated DispMap Accordion below --> */}
             <div className="break"></div>
             <div className="generatedMeshAccordion">
@@ -205,7 +216,7 @@ function RenderDispMapMesh({
                     Preview
                   </Typography>
                   <Typography sx={{ color: "text.secondary" }}>
-                    Show Generated Mesh (<em>.???</em>)
+                    Show Generated Mesh
                   </Typography>
                 </AccordionSummary>
                 <AccordionDetails>

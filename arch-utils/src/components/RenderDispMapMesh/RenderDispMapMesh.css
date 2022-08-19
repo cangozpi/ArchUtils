@@ -7,3 +7,8 @@ canvas {
     flex-basis: 100%;
     max-width: 90vw;
 }
+
+#gui {
+    position: absolute;
+    right: 0;
+}

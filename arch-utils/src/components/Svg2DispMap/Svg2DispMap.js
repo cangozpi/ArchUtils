@@ -15,6 +15,8 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
+import Swal from "sweetalert2";
+
 // Global Variables ======
 let prcnt_inc = 0.5; // percentage(%) increment wrt length of each path/contour in svg
 let z_value = 100; // z value of the data Points //TODO: make this in between different contours
@@ -35,6 +37,17 @@ function Svg2DispMap({
     // Update the state
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
+
+      // Display uploaded file information to the user
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
+        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
+        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
+      `,
+        "success"
+      );
     }
   };
 

@@ -22,7 +22,7 @@ const fileUpload = require("express-fileupload");
 // );
 app.use(fileUpload());
 
-const port = process.env.PORT;
+const port = process.env.PORT || 8080;
 
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
@@ -50,12 +50,16 @@ app.put("/dxf2svg", (req, res) => {
 
   // setTimeoutLimit for file generation process
   setTimeout(() => {
-    if (fs.existsSync(uploadPath) == true) {
-      return res
-        .status(500)
-        .send(
-          `Time out Error. Could not generate your file within the given time limit ${timeoutDuration} seconds`
-        );
+    try {
+      if (fs.existsSync(uploadPath) == true) {
+        return res
+          .status(500)
+          .send(
+            `Time out Error. Could not generate your file within the given time limit ${timeoutDuration} seconds`
+          );
+      }
+    } catch (err) {
+      return res.status(500).send(err);
     }
   }, timeoutDuration);
 
@@ -75,46 +79,52 @@ app.put("/dxf2svg", (req, res) => {
 
   let downloadPath = basePath + ".svg";
 
-  // Use the mv() method to place the file somewhere on your server
-  req.files.dxf_file.mv(uploadPath, (err) => {
-    if (err) {
-      return res.status(500).send(err);
-    } else {
-      // Use child_process.spawn method from
-      // child_process module and assign it
-      // to variable spawn
+  try {
+    // Use the mv() method to place the file somewhere on your server
+    req.files.dxf_file.mv(uploadPath, (err) => {
+      if (err) {
+        return res.status(500).send(err);
+      } else {
+        // Use child_process.spawn method from
+        // child_process module and assign it
+        // to variable spawn
 
-      var spawn = child_process.spawn;
+        var spawn = child_process.spawn;
 
-      // Parameters passed in spawn -
-      // 1. type_of_script
-      // 2. list containing Path of the script
-      //    and arguments for the script
+        // Parameters passed in spawn -
+        // 1. type_of_script
+        // 2. list containing Path of the script
+        //    and arguments for the script
 
-      var process = spawn(pythonBinaryDir, [scriptDir, uploadPath]);
+        var process = spawn(pythonBinaryDir, [scriptDir, uploadPath]);
 
-      // Takes stdout data from script which executed
-      // with arguments and send this data to res object
-      const pythonSuccessfullFlag = "svg successfully generated";
-      process.stdout.on("data", (data) => {
-        if (data.toString().trim() == pythonSuccessfullFlag) {
-          // send generated .svg file back to client.
-          res.download(downloadPath, () => {
-            fs.unlink(downloadPath, (err) => {});
-            fs.unlink(uploadPath, (err) => {});
-          });
-        } else {
-          res.send("something went wrong with the dxf2svg conversion script !");
-          fs.unlink(uploadPath);
-        }
-      });
+        // Takes stdout data from script which executed
+        // with arguments and send this data to res object
+        const pythonSuccessfullFlag = "svg successfully generated";
+        process.stdout.on("data", (data) => {
+          if (data.toString().trim() == pythonSuccessfullFlag) {
+            // send generated .svg file back to client.
+            res.download(downloadPath, () => {
+              fs.unlink(downloadPath, (err) => {});
+              fs.unlink(uploadPath, (err) => {});
+            });
+          } else {
+            res.send(
+              "something went wrong with the dxf2svg conversion script !"
+            );
+            fs.unlink(uploadPath);
+          }
+        });
 
-      process.stderr.on("data", (data) => {
-        console.log(data, data.toString());
-        res.send(data.toString());
-        fs.unlink(uploadPath, (err) => console.error(err));
-      });
-    }
-  });
+        process.stderr.on("data", (data) => {
+          console.log(data, data.toString());
+          res.send(data.toString());
+          fs.unlink(uploadPath, (err) => console.error(err));
+        });
+      }
+    });
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 // Calling child process starts ends ------------------------------------
