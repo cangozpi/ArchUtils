@@ -57,20 +57,24 @@ function Svg2DispMap({
   }, [fileState]);
 
   let onDownloadJpg = () => {
-    let a = document.createElement("a");
-    a.href = imageDataUrl;
-    a.download = uploadedSvg.name.split(".")[0].trim() + ".jpg";
-    a.click();
+    if (generationCompleted) {
+      let a = document.createElement("a");
+      a.href = imageDataUrl;
+      a.download = uploadedSvg.name.split(".")[0].trim() + ".jpg";
+      a.click();
+    }
   };
 
   let onGenerateDispMap = () => {
     // pass fileState to svg2DispMap component
-    setPreviouslyGeneratedFileState({
-      url: imageDataUrl,
-      name: uploadedSvg.name.split(".")[0].trim() + ".jpg",
-    });
-    // swith Tabs to RenderDispMapMesh component
-    handleChangeTabs(undefined, 2);
+    if (generationCompleted) {
+      setPreviouslyGeneratedFileState({
+        url: imageDataUrl,
+        name: uploadedSvg.name.split(".")[0].trim() + ".jpg",
+      });
+      // swith Tabs to RenderDispMapMesh component
+      handleChangeTabs(undefined, 2);
+    }
   };
 
   // File upload functions end ------------------------
@@ -121,10 +125,13 @@ function Svg2DispMap({
     }
   }, [svgObjectRendered, updateState]);
 
+  let [generationCompleted, setGenerationCompleted] = useState(false);
+
   let [showGeneratedDispMap, setShowGeneratedDispMap] = useState(false);
   useEffect(() => {
     // display image
     if (imageDataUrl != undefined) {
+      setGenerationCompleted(true);
       setShowGeneratedDispMap(true);
     }
   }, [imageDataUrl]);

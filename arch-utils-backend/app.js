@@ -1,3 +1,4 @@
+require("dotenv").config();
 var fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 var cors = require("cors");
@@ -21,7 +22,7 @@ const fileUpload = require("express-fileupload");
 // );
 app.use(fileUpload());
 
-const port = 8080;
+const port = process.env.PORT;
 
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
@@ -36,11 +37,11 @@ app.put("/dxf2svg", (req, res) => {
   // save the .dxf file onto server so that python script can be run on it
 
   // save original file name
-  const pythonBinaryDir =
-    "./utility scripts/dxf2svg_python_script/myVenv/bin/python";
+  const pythonBinaryDir = process.env.PYTHON_BINARY_DIR;
   const scriptDir = "./utility scripts/dxf2svg_python_script/dxf2svg.py";
-  const originalFileName = req.files.dxf_file.name;
   const timeoutDuration = 50000;
+  // const originalFileName = req.files.dxf_file.name;
+
   // create unique name for the file
   let basePath =
     __dirname + "/utility scripts/dxf2svg_python_script/IOFiles/" + uuidv4();

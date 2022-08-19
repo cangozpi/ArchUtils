@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Dxf2Svg.css";
 // Labelled Buttons
 import LabelledButton from "./LabelledButton/LabelledButton";
@@ -61,17 +61,28 @@ function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
   }, [fileState]);
 
   let onDownloadSvg = () => {
-    let a = document.createElement("a");
-    a.href = generatedSvg.url;
-    a.download = generatedSvg.name;
-    a.click();
+    if (generationCompleted) {
+      let a = document.createElement("a");
+      a.href = generatedSvg.url;
+      a.download = generatedSvg.name;
+      a.click();
+    }
   };
 
+  useEffect(() => {
+    if (generatedSvg) {
+      setGenerationCompleted(true);
+    }
+  }, [generatedSvg]);
+  let [generationCompleted, setGenerationCompleted] = React.useState(false);
+
   let onGenerateDispMap = () => {
-    // pass fileState to svg2DispMap component
-    setPreviouslyGeneratedFileState(generatedSvg);
-    // swith Tabs to svg2DispMap component
-    handleChangeTabs(undefined, 1);
+    if (generationCompleted) {
+      // pass fileState to svg2DispMap component
+      setPreviouslyGeneratedFileState(generatedSvg);
+      // swith Tabs to svg2DispMap component
+      handleChangeTabs(undefined, 1);
+    }
   };
 
   // File upload functions end ------------------------
