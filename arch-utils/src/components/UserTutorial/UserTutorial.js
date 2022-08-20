@@ -5,7 +5,7 @@ import "./UserTutorial.css";
 // import sample .dxf file
 import sampleDxfFile from "./Sample dxf Archutils.dxf";
 
-function UserTutorial() {
+function UserTutorial({ showTutorial, setShowTutorial }) {
   // Show tutorial using SweetAlert Queues
   async function playTutorial() {
     const steps = ["1", "2", "3", "4"];
@@ -55,45 +55,50 @@ function UserTutorial() {
       {
         title: `Get a Taste:`,
         html: `
-                You can <a href="${sampleDxfFile}">download</a> the sample <em>.dxf</em> file to check out how this all works.
+                You can <a href="${sampleDxfFile}" download="Sample dxf file.dxf"><em>download</em></a> the sample <em>.dxf</em> file to check out how this all works.
           `,
       },
     ];
 
-    for (currentStep = 3; currentStep < steps.length; ) {
-      if (currentStep < steps.length - 1) {
-        const result = await swalQueueStep
-          .fire({
-            title: tutorialScripts[currentStep].title,
-            html: tutorialScripts[currentStep].html,
-            showCancelButton: currentStep > 0,
-            currentProgressStep: currentStep,
-          })
-          .then();
+    for (currentStep = 0; currentStep < steps.length; ) {
+      const result = await swalQueueStep
+        .fire({
+          title: tutorialScripts[currentStep].title,
+          html: tutorialScripts[currentStep].html,
+          showCancelButton: currentStep > 0,
+          currentProgressStep: currentStep,
+        })
+        .then();
 
-        if (result.value) {
-          values[currentStep] = result.value;
-          currentStep++;
-        } else if (result.dismiss === Swal.DismissReason.cancel) {
-          currentStep--;
-        } else {
-          break;
-        }
+      if (result.value) {
+        values[currentStep] = result.value;
+        currentStep++;
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        currentStep--;
       } else {
-        // tutorial ended pop up closed
-        // set tutorial taken cookie
-        // set showTutorial State
-        console.log("helo");
+        break;
       }
 
       if (currentStep === steps.length) {
+        // tutorial ended pop up closed
+        // set tutorial taken cookie
+        window.localStorage.setItem("showTutorial", JSON.stringify(false));
+        // set showTutorial State
+        setShowTutorial(false);
       }
     }
   }
 
   useEffect(() => {
-    playTutorial();
-  }, []);
+    console.log(
+      "showTutorial == true",
+      showTutorial == true,
+      showTutorial === true
+    );
+    if (showTutorial == true) {
+      playTutorial();
+    }
+  }, [showTutorial]);
 
   return <></>;
 }
