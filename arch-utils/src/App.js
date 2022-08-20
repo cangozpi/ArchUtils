@@ -28,7 +28,11 @@ function App() {
           setShowTutorial={setShowTutorial}
         ></UserTutorial>
       )}
-      <Banner title={title}></Banner>
+      <Banner
+        showTutorial={showTutorial}
+        setShowTutorial={setShowTutorial}
+        title={title}
+      ></Banner>
       <UtilitiesBar>
         <Dxf2Svg></Dxf2Svg>
         <Svg2DispMap></Svg2DispMap>

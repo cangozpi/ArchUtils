@@ -85,16 +85,28 @@ function UserTutorial({ showTutorial, setShowTutorial }) {
         window.localStorage.setItem("showTutorial", JSON.stringify(false));
         // set showTutorial State
         setShowTutorial(false);
+        // toast Tutorial completion
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Tutorial completed successfully",
+        });
       }
     }
   }
 
   useEffect(() => {
-    console.log(
-      "showTutorial == true",
-      showTutorial == true,
-      showTutorial === true
-    );
     if (showTutorial == true) {
       playTutorial();
     }
