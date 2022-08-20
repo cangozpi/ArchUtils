@@ -5,16 +5,27 @@ const express = require("express");
 
 const router = express.Router();
 
+// setTimeoutLimit for file generation process
+const timeOutDuration = 60000; // (in ms) ~ 1min
+function requestTimeout(req, res, next) {
+  res.setTimeout(timeOutDuration, function () {
+    console.log("Request has timed out.");
+    res.status(408).send({ error: "Request has timed out." });
+  });
+
+  next();
+}
+
 // Calling child process starts here ----------------------------------
 var child_process = require("child_process");
 
 //handles localhost:8080/dxf2svg
-router.put("/", (req, res) => {
+router.put("/", requestTimeout, (req, res) => {
   // save the .dxf file onto server so that python script can be run on it
   // save original file name
   const pythonBinaryDir = process.env.PYTHON_BINARY_DIR;
   const scriptDir = "./utility scripts/dxf2svg_python_script/dxf2svg.py";
-  const timeoutDuration = 50000;
+  const timeoutDuration = 20000;
   // const originalFileName = req.files.dxf_file.name;
 
   // create unique name for the file
@@ -22,21 +33,6 @@ router.put("/", (req, res) => {
     __dirname + "/../utility scripts/dxf2svg_python_script/IOFiles/" + uuidv4();
 
   let uploadPath = basePath + ".dxf";
-
-  // setTimeoutLimit for file generation process
-  setTimeout(() => {
-    try {
-      if (fs.existsSync(uploadPath) == true) {
-        return res
-          .status(500)
-          .send(
-            `Time out Error. Could not generate your file within the given time limit ${timeoutDuration} seconds`
-          );
-      }
-    } catch (err) {
-      return res.status(500).send(err);
-    }
-  }, timeoutDuration);
 
   // check if the uuid file name is unique
   try {
@@ -79,20 +75,22 @@ router.put("/", (req, res) => {
         process.stdout.on("data", (data) => {
           if (data.toString().trim() == pythonSuccessfullFlag) {
             // send generated .svg file back to client.
+
             res.download(downloadPath, () => {
               fs.unlink(downloadPath, (err) => {});
               fs.unlink(uploadPath, (err) => {});
             });
           } else {
-            res.send(
-              "something went wrong with the dxf2svg conversion script !"
-            );
+            res
+              .status(500)
+              .send(
+                "something went wrong with the dxf2svg conversion script !"
+              );
             fs.unlink(uploadPath);
           }
         });
 
         process.stderr.on("data", (data) => {
-          res.status(500).send({ error: data.toString() });
           fs.unlink(uploadPath, (err) => console.error(err));
         });
       }

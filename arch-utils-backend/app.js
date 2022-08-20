@@ -8,8 +8,8 @@ const cluster = require("cluster");
 const totalCPUs = require("os").cpus().length;
 
 if (cluster.isMaster) {
-  console.log(`Number of CPUs is ${totalCPUs}`);
-  console.log(`Master ${process.pid} is running`);
+  console.log(`Number of available CPUs is ${totalCPUs}`);
+  console.log(`Master is running with pid:${process.pid}`);
 
   // Fork workers.
   for (let i = 0; i < totalCPUs; i++) {
@@ -17,7 +17,7 @@ if (cluster.isMaster) {
   }
 
   cluster.on("exit", (worker, code, signal) => {
-    console.log(`worker ${worker.process.pid} died`);
+    console.log(`worker with pid:${worker.process.pid} died`);
     console.log("Let's fork another worker!");
     cluster.fork();
   });
@@ -38,6 +38,8 @@ if (cluster.isMaster) {
   const port = process.env.PORT || 8080;
 
   app.listen(port, () => {
-    console.log(`server running on port ${port}`);
+    console.log(
+      `server running on port ${port}, with worker pid: ${process.pid}`
+    );
   });
 }
