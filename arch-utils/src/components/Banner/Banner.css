@@ -22,7 +22,8 @@
 .title {
     flex-grow: 1;
     position: relative;
-    left: calc(-3em);
+    left: calc(-1.5em) !important;
+    width: 100vw !important;
     color: antiquewhite;
     cursor: default;
 }
@@ -56,12 +57,12 @@
     }
 
      .info_icon_wrapper {
-    position: relative;
-    right: 0;
+        position: relative;
+        right: 0;
     }
 
     .title {
-        left: inherit;
+        left: inherit !important;
     }
     
 }
