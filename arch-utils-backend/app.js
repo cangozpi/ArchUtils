@@ -3,22 +3,41 @@ var cors = require("cors");
 var express = require("express");
 const fileUpload = require("express-fileupload");
 const dxf2svg = require("./routes/dxf2svg");
+const cluster = require("cluster");
 
-var app = express();
+const totalCPUs = require("os").cpus().length;
 
-// express middleware
-app.use(cors());
-app.use(fileUpload());
-app.use("/dxf2svg", dxf2svg);
+if (cluster.isMaster) {
+  console.log(`Number of CPUs is ${totalCPUs}`);
+  console.log(`Master ${process.pid} is running`);
 
-// app.use(express.json());
-// const bodyParser = require("body-parser");
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded());
-// app.use(bodyParser.urlencoded({ extended: true }));
+  // Fork workers.
+  for (let i = 0; i < totalCPUs; i++) {
+    cluster.fork();
+  }
 
-const port = process.env.PORT || 8080;
+  cluster.on("exit", (worker, code, signal) => {
+    console.log(`worker ${worker.process.pid} died`);
+    console.log("Let's fork another worker!");
+    cluster.fork();
+  });
+} else {
+  var app = express();
 
-app.listen(port, () => {
-  console.log(`server running on port ${port}`);
-});
+  // express middleware
+  app.use(cors());
+  app.use(fileUpload());
+  app.use("/dxf2svg", dxf2svg);
+
+  // app.use(express.json());
+  // const bodyParser = require("body-parser");
+  // app.use(bodyParser.json());
+  // app.use(bodyParser.urlencoded());
+  // app.use(bodyParser.urlencoded({ extended: true }));
+
+  const port = process.env.PORT || 8080;
+
+  app.listen(port, () => {
+    console.log(`server running on port ${port}`);
+  });
+}
