@@ -4,11 +4,14 @@ import Svg2DispMap from "./components/Svg2DispMap/Svg2DispMap";
 import RenderDispMapMesh from "./components/RenderDispMapMesh/RenderDispMapMesh";
 import UtilitiesBar from "./components/UtilitiesBar/UtilitiesBar";
 import Dxf2Svg from "./components/Dxf2Svg/Dxf2Svg";
+import UserTutorial from "./components/UserTutorial/UserTutorial";
 
 function App() {
   let title = "ArchUtils";
+  let showTutorial = true;
   return (
     <div className="App">
+      {showTutorial && <UserTutorial></UserTutorial>}
       <Banner title={title}></Banner>
       <UtilitiesBar>
         <Dxf2Svg></Dxf2Svg>

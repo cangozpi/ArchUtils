@@ -1,6 +1,6 @@
 import React from "react";
 import "./Banner.css";
-import architectLogo from "../../architect-icon.jpg";
+import architectLogo from "../../logo512.png";
 
 function Banner({ title }) {
   return (
