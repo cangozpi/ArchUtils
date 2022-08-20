@@ -6,7 +6,14 @@ import InfoIcon from "@mui/icons-material/Info";
 function Banner({ title, showTutorial, setShowTutorial }) {
   function HelpIconClicked() {
     // Show User Tutorial
-    setShowTutorial(true);
+    if (showTutorial == true) {
+      // user has not completed the tutorial before yet wants to see again
+      setShowTutorial(false); // update state so that re-rendering takes place
+      setShowTutorial(true);
+    } else {
+      // user has taken the tutorial before but wants to see again
+      setShowTutorial(true);
+    }
   }
   return (
     <div className="banner">

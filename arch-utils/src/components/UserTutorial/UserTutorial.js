@@ -75,6 +75,13 @@ function UserTutorial({ showTutorial, setShowTutorial }) {
         currentStep++;
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         currentStep--;
+      } else if (
+        result.dismiss === Swal.DismissReason.backdrop ||
+        result.dismiss === Swal.DismissReason.close ||
+        result.dismiss === Swal.DismissReason.esc
+      ) {
+        setShowTutorial(false);
+        break;
       } else {
         break;
       }

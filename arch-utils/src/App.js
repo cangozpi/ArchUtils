@@ -17,6 +17,9 @@ function App() {
     );
     if (stored_showTutorial != null) {
       setShowTutorial(stored_showTutorial);
+    } else {
+      // first time visiting web site
+      setShowTutorial(true);
     }
   }, []);
 
