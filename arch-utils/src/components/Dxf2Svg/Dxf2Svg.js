@@ -16,7 +16,8 @@ import Swal from "sweetalert2";
 
 function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
   // File upload functions start here ------------------------
-  const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg";
+  // const postDxfFileURL = "http://127.0.0.1:8080/dxf2svg"; // for local dev
+  const postDxfFileURL = "/dxf2svg"; // for serving with nodeJs
   let [fileState, setFileState] = React.useState(null); // uploaded .dxf file
   let [showSvgButtonsFlag, setShowSvgButtonsFlag] = React.useState(false);
   let [generatedSvg, setGeneratedSvg] = React.useState(null);
