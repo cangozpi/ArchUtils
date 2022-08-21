@@ -15,6 +15,7 @@
     .tabs {
         display: flex !important;
         flex-direction: column !important;
+        align-items: center;
         /* font-size: 0.6em !important;
         font-weight: bolder !important; */
         font-weight: bolder !important;
