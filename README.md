@@ -1,47 +1,58 @@
-# Heightmap Generator From Input Contour Map
+# ArchUtils
 
-Given a contour file in the _.dxf_ format, this code generates a visual height map for terrain generation purposes and displays it in a web page.
-
----
-
-## To run:
-
-1. Convert **.dxf** extension file which you want to generate the heatmap for to **.svg** file format doing the following:
-
-   - To convert _.dxf_ format to _.svg_ format:
-
-     ```bash
-     cd temp/dxf2svg
-     ```
-
-     ```bash
-     python dxf2svg.py IsohipsTest.dxf(<i.e target .dxf file>)
-     ```
-
-2. Start the web page for visualizing the generated heightmap in the browser:
-
-   ```bash
-   cd ExtractCoordinates
-   ```
-
-   - Render the index.html page in your preferred browser.
-
-   **Note:** If you are using Vs Code, you can use the _Live Server_ extension for ease.
+#### ArchUtils is a responsive web application which aims to provide some utilities to architects. It provides functionalities such as converting _.dxf_ files to _.svg_, generating displacement maps (height maps) from files (.dxf & .svg ) given that their content follows a topographic map structure, and interactive visualizations with your displacement maps. It uses React for front-end side, NodeJs+express for back-end side and python for some of the scripts.
 
 ---
 
-## Side Notes:
+## <img src="./readme resources/app screenshot.png" width="50%"/>
 
-- To install python requirements:
+## Install and Run:
 
-  ```bash
-  pip install requirements.txt
-  ```
+1. Install & build React Applicaiton
 
-- To Generate requirements.txt file for python:
-
-  **Note**: This is for dev purposes only.
+- Install react application dependencies
 
   ```bash
-  pip freeze > requirements.txt
+  cd arch-utils
+  npm install
   ```
+
+- Build the application
+  ```bash
+  npm run build
+  ```
+
+After successfull completion, you should now have a _build_ folder located inside _arch-utils_ folder.
+
+2. Install & run NodeJs server
+
+- Install python modules that are required for the python scripts:
+  ```bash
+  cd arch-utils-backend
+  pip install -r requirements.txt
+  ```
+- Install Nodejs npm dependencies
+  ```bash
+  npm install
+  ```
+- Start NodeJs server
+  ```bash
+  npm start
+  ```
+  After these steps you can reach the site by visiting "http://localhost:8080/" on your web browser.
+
+---
+
+## Versions:
+
+Versions of the technologies used during development could be found below:
+
+```bash
+node --version
+v16.17.0
+```
+
+```bash
+python --version
+3.7.11
+```
