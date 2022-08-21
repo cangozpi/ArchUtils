@@ -3,6 +3,7 @@ var cors = require("cors");
 var express = require("express");
 const fileUpload = require("express-fileupload");
 const dxf2svg = require("./routes/dxf2svg");
+const serveReactApp = require("./view/serveReactApp");
 const cluster = require("cluster");
 
 const totalCPUs = require("os").cpus().length;
@@ -28,6 +29,9 @@ if (cluster.isMaster) {
   app.use(cors());
   app.use(fileUpload());
   app.use("/dxf2svg", dxf2svg);
+
+  // Serve React App
+  app.use("/", serveReactApp);
 
   // app.use(express.json());
   // const bodyParser = require("body-parser");
