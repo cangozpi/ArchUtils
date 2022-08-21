@@ -44,31 +44,6 @@ After these steps you can reach the site by visiting _http://localhost:8080/_ on
 
 ---
 
-## Versions:
-
-Versions of the technologies used during development could be found below:
-
-```bash
-node --version
-v16.17.0
-```
-
-```bash
-python --version
-3.7.11
-```
-
----
-
-## Project Structure:
-
-- **arch-utils**:
-  React application containing front-end code.
-- **arch-utils-backend**:
-  NodeJs server containing back-end code. It contains API end-points, and serves react application's (arch-utils) build.
-
----
-
 ## Run Server and Client Separately Using Docker:
 
 - **React Application**:
@@ -105,3 +80,30 @@ This builds React application and then serves the application using nodeJs serve
 docker build -t server .
 docker run -it -p 8080:8080 server
 ```
+
+---
+
+## Versions:
+
+Versions of the technologies used during development could be found below:
+
+```bash
+node --version
+v16.17.0
+```
+
+```bash
+python --version
+3.7.11
+```
+
+---
+
+## Project Structure:
+
+- **arch-utils**:
+  React application containing front-end code.
+- **arch-utils-backend**:
+  NodeJs server containing back-end code. It contains API end-points, and serves react application's (arch-utils) build.
+
+---
