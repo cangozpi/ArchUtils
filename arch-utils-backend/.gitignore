@@ -1,4 +1,2 @@
 /node_modules
-/utility scripts/dxf2svg_python_script/myVenv
 /utility scripts/dxf2svg_python_script/IOFiles/*
-/notes.txt
