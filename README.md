@@ -2,7 +2,9 @@
 
 #### ArchUtils is a responsive web application which aims to provide some utilities to architects. It provides functionalities such as converting _.dxf_ files to _.svg_, generating displacement maps (height maps) from files (.dxf & .svg ) given that their content follows a topographic map structure, and interactive visualizations of your displacement maps. It uses React for front-end side, NodeJs+express for back-end side and python for some of the scripts.
 
-<img src="./readme resources/app screenshot.png" width="50%"/>
+|                              Desktop View                               |                                  Mobile View                                   |
+| :---------------------------------------------------------------------: | :----------------------------------------------------------------------------: |
+| <img src="./readme resources/landing page screenshot.png" width="70%"/> | <img src="./readme resources/landing page mobile screenshot.png" width="35%"/> |
 
 ---
 
