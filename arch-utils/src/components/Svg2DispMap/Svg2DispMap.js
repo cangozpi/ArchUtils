@@ -37,17 +37,6 @@ function Svg2DispMap({
     // Update the state
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
-
-      // Display uploaded file information to the user
-      Swal.fire(
-        "File Uploaded!",
-        `
-        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
-        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
-        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
-      `,
-        "success"
-      );
     }
   };
 
@@ -65,7 +54,18 @@ function Svg2DispMap({
   React.useEffect(() => {
     // send .dxf file to the server for it to convert and return .svg converted version
     if (fileState != null) {
-      generateDispMap();
+      // Display uploaded file information to the user
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${fileState.name}</em><br>
+        <strong>File type</strong>: <em>${fileState.type}</em><br>
+        <strong>File size</strong>: <em>${fileState.size} byte</em><br>
+      `,
+        "success"
+      ).then(() => {
+        generateDispMap();
+      });
     }
   }, [fileState]);
 
@@ -112,19 +112,22 @@ function Svg2DispMap({
   let [svgObjectRendered, setSvgObjectRendered] = React.useState(false);
   useEffect(() => {
     if (showButtonsFlag == true) {
-      if (svgRef.current != undefined && svgObjectRendered == false) {
-        setSvgObjectRendered(true);
-      }
+      let interval = setInterval(() => {
+        let svg_el = document
+          .querySelector(".dxf2svg_svg")
+          ?.contentDocument?.querySelector("svg");
+        if (svg_el != null && svgObjectRendered == false) {
+          clearInterval(interval); // stop setInterval firing any longer
+          setSvgObjectRendered(true);
+        }
+      }, 1000);
     }
-  }, [showButtonsFlag]);
+  }, [showButtonsFlag, uploadedSvg]);
 
-  let [updateState, setUpdateState] = useState(false);
   let [imageDataUrl, setImageDataUrl] = useState();
   useEffect(() => {
     if (svgObjectRendered == true) {
-      if (updateState == false) {
-        setUpdateState(true);
-      } else {
+      try {
         let svg_el =
           document.querySelector(".dxf2svg_svg").contentDocument
             .documentElement;
@@ -136,9 +139,27 @@ function Svg2DispMap({
           id,
           setImageDataUrl
         );
+      } catch (e) {
+        // toast Fetch Error
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "error",
+          title: "Error, something went wrong",
+        });
       }
     }
-  }, [svgObjectRendered, updateState]);
+  }, [svgObjectRendered]);
 
   let [generationCompleted, setGenerationCompleted] = useState(false);
 
@@ -148,6 +169,23 @@ function Svg2DispMap({
     if (imageDataUrl != undefined) {
       setGenerationCompleted(true);
       setShowGeneratedDispMap(true);
+      // toast Successfully dispMap generated
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "success",
+        title: "Displacement map generation successfull",
+      });
     }
   }, [imageDataUrl]);
 

@@ -41,9 +41,62 @@ function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
             });
             setShowSvgButtonsFlag(true);
           });
+          // toast Fetch Error
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "success",
+            title: "Conversion successfull",
+          });
+        } else {
+          // toast Fetch Error
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "error",
+            title: "Error, something went wrong",
+          });
         }
       })
       .catch((error) => {
+        // toast Fetch Error
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "error",
+          title: "Error, something went wrong",
+        });
+
         console.error("Error:", error);
       });
   };
@@ -52,22 +105,23 @@ function Dxf2Svg({ handleChangeTabs, setPreviouslyGeneratedFileState }) {
     // Update the state
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
-      Swal.fire(
-        "File Uploaded!",
-        `
-        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
-        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
-        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
-      `,
-        "success"
-      );
     }
   };
 
   React.useEffect(() => {
     // send .dxf file to the server for it to convert and return .svg converted version
     if (fileState != null) {
-      PostDxfFileToServer();
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${fileState.name}</em><br>
+        <strong>File type</strong>: <em>${fileState.type}</em><br>
+        <strong>File size</strong>: <em>${fileState.size} byte</em><br>
+      `,
+        "success"
+      ).then(() => {
+        PostDxfFileToServer();
+      });
     }
   }, [fileState]);
 

@@ -46,15 +46,6 @@ function RenderDispMapMesh({
     if (event.target.files.length > 0) {
       setFileState(event.target.files[0]); // useEffect would be triggered to make the PUT request to the server
       // Display uploaded file information to the user
-      Swal.fire(
-        "File Uploaded!",
-        `
-        <strong>File name</strong>: <em>${event.target.files[0].name}</em><br>
-        <strong>File type</strong>: <em>${event.target.files[0].type}</em><br>
-        <strong>File size</strong>: <em>${event.target.files[0].size} byte</em><br>
-      `,
-        "success"
-      );
     }
   };
 
@@ -70,7 +61,17 @@ function RenderDispMapMesh({
   React.useEffect(() => {
     // send .dxf file to the server for it to convert and return .svg converted version
     if (fileState != null) {
-      generateDispMap();
+      Swal.fire(
+        "File Uploaded!",
+        `
+        <strong>File name</strong>: <em>${fileState.name}</em><br>
+        <strong>File type</strong>: <em>${fileState.type}</em><br>
+        <strong>File size</strong>: <em>${fileState.size} byte</em><br>
+      `,
+        "success"
+      ).then(() => {
+        generateDispMap();
+      });
     }
   }, [fileState]);
 
@@ -124,37 +125,95 @@ function RenderDispMapMesh({
   let [normalMapUrl, setNormalMapUrl] = React.useState();
 
   useEffect(() => {
-    if (normalMapUrl != undefined) {
-      let dispMapImage = uploadedJpg.url;
-      let threeJsObject = renderDispMapMeshHelper(
-        dispMapImage,
-        normalMapUrl,
-        camera_x,
-        camera_y,
-        camera_z
-      );
-      setThreeJsObject(threeJsObject);
-      threeJsObject.render(); //start rendering the scene
+    try {
+      if (normalMapUrl != undefined) {
+        let dispMapImage = uploadedJpg.url;
+        let threeJsObject = renderDispMapMeshHelper(
+          dispMapImage,
+          normalMapUrl,
+          camera_x,
+          camera_y,
+          camera_z
+        );
+        setThreeJsObject(threeJsObject);
+        threeJsObject.render(); //start rendering the scene
 
-      // append three js dat gui
-      let threeCanvas = document.querySelector(".threeJsCanvasContainer");
-      //check if gui has been added before
-      let priorGuiList = document.querySelectorAll("#gui");
-      for (let i = 0; i < priorGuiList.length; i++) {
-        priorGuiList[i].remove();
+        // append three js dat gui
+        let threeCanvas = document.querySelector(".threeJsCanvasContainer");
+        //check if gui has been added before
+        let priorGuiList = document.querySelectorAll("#gui");
+        for (let i = 0; i < priorGuiList.length; i++) {
+          priorGuiList[i].remove();
+        }
+        // append new gui to DOM
+        threeCanvas.prepend(threeJsObject.gui.domElement);
+
+        setmeshRendered(true);
+
+        // toast Fetch Error
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Mesh generation successfull",
+        });
       }
-      // append new gui to DOM
-      threeCanvas.prepend(threeJsObject.gui.domElement);
+    } catch (e) {
+      // toast Fetch Error
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
 
-      setmeshRendered(true);
+      Toast.fire({
+        icon: "error",
+        title: "Error, something went wrong",
+      });
     }
   }, [normalMapUrl]);
 
   useEffect(() => {
     if (showButtonsFlag == true) {
       if (meshRendered == false) {
-        let dispMapImage = uploadedJpg.url;
-        normalMapGenerationHelper(dispMapImage, setNormalMapUrl);
+        try {
+          let dispMapImage = uploadedJpg.url;
+          normalMapGenerationHelper(dispMapImage, setNormalMapUrl);
+        } catch (e) {
+          // toast Fetch Error
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.addEventListener("mouseenter", Swal.stopTimer);
+              toast.addEventListener("mouseleave", Swal.resumeTimer);
+            },
+          });
+
+          Toast.fire({
+            icon: "error",
+            title: "Error, something went wrong",
+          });
+        }
       }
     }
   }, [showButtonsFlag]);
