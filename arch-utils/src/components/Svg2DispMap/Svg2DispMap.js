@@ -125,7 +125,9 @@ function Svg2DispMap({
       if (updateState == false) {
         setUpdateState(true);
       } else {
-        let svg_el = svgRef.current.contentDocument.documentElement;
+        let svg_el =
+          document.querySelector(".dxf2svg_svg").contentDocument
+            .documentElement;
         svg2DispMapHelper(
           svg_el,
           prcnt_inc,
@@ -256,7 +258,7 @@ function Svg2DispMap({
                     <img style={{ width: "100%" }} src={imageDataUrl}></img>
                   )}
 
-                  {showGeneratedDispMap == false && (
+                  {showGeneratedDispMap === false && (
                     <object
                       ref={svgRef}
                       type="image/svg+xml"
